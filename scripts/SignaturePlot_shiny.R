@@ -1,7 +1,8 @@
 ## SignaturePlot_shiny.R
 ##
+## Created by Nisitha Jayatilleke
 ## Date: 23/07/2019
-## Last updated: 23/07/2019
+## Last updated: 07/07/2020
 
 # Initiliase widgets
 observeEvent(
@@ -203,7 +204,6 @@ observeEvent(
           multiple = F
         )
       })
-      
       # Create TPM object
       SigPlotTpmObject <- reactive({
         tpm <- SigPlotTPM()
@@ -213,7 +213,6 @@ observeEvent(
         logTPM <- log10(tpm)
         return(logTPM)
       })
-      
       # Construct signature plot with plotly
       output$SigPlot <- renderPlotly({
         test <- SigPlotTpmObject()
@@ -258,7 +257,6 @@ observeEvent(
         )
         
         shinyjs::enable("SigPlotDownload")
-        
         ggplotly(print(p), tooltip = c("patientID", "value", "gene"))
       })
     }
@@ -337,7 +335,6 @@ observeEvent(
         )
         
         shinyjs::enable("SigPlotDownload")
-        
         ggplotly(print(p), tooltip = c("patientID", "value", "gene"))
       })
     }
