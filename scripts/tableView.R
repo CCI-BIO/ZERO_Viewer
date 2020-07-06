@@ -1,8 +1,9 @@
 ## tableView.R
-## Server logic for table view in ZERO app
+## Display tables in ZERO app
 ##
+## Created by Nisitha Jayatilleke
 ## Date: 17/07/2019
-## Last updated: 17/07/2019
+## Last updated: 07/07/2020
 
 # Online or Offline mode
 observe({
