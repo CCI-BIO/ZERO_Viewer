@@ -1,6 +1,7 @@
 ## tSNEPlot_shiny.R
-## Server logic for tSNE plot in ZERO app
+## Create a tSNE plot in ZERO app
 ##
+## Created by Nisitha Jayatilleke
 ## Date: 18/07/2019
 ## Last updated: 18/07/2019
 
@@ -277,16 +278,12 @@ observeEvent(
             if(input$tSNEbroadCategories == "specific"){
               cncInfo <- tSNEpatientMetadataAlt()
               cncInfo <- t(cncInfo)
-             
               cncType <- cncInfo[1,-1]
               cncType2 <- cncInfo[3,-1]
-              
               logTPM <- tSNETpmObject()
-              
               tsne <- tSNEobject()
               tsne_points <- as.data.frame(tsne$Y)
               tsne_points <- cbind(tsne_points, Diagnosis = as.vector(cncType), CancerCategory = as.vector(cncType2), SampleID = rownames(logTPM))
-              
               colourTable <- tSNEcolourTable()
               colourTable <- colourTable[-c((nrow(colourTable)-3):nrow(colourTable)),]
               CancerColours <- colourTable$cols
@@ -308,16 +305,12 @@ observeEvent(
             } else if(input$tSNEbroadCategories == "broad"){
               cncInfo <- tSNEpatientMetadataAlt()
               cncInfo <- t(cncInfo)
-              
               cncType <- cncInfo[1,-1]
               cncType2 <- cncInfo[3,-1]
-              
               logTPM <- tSNETpmObject()
-              
               tsne <- tSNEobject()
               tsne_points <- as.data.frame(tsne$Y)
               tsne_points <- cbind(tsne_points, Diagnosis = as.vector(cncType), CancerCategory = as.vector(cncType2), SampleID = rownames(logTPM))
-              
               colourTable <- tSNEcolourTable()
               colourTable <- colourTable[c((nrow(colourTable)-3):nrow(colourTable)),]
               CancerColours <- colourTable$cols
@@ -363,12 +356,9 @@ observeEvent(
             if(!is.null(id)){
               cncInfo <- tSNEpatientMetadataAlt()
               cncInfo <- t(cncInfo)
-              
               cncType <- cncInfo[1,-1]
               cncType2 <- cncInfo[3,-1]
-              
               logTPM <- tSNETpmObject()
-              
               colourTable <- tSNEcolourTable()
               samplesToColour <- colourTable$Patient
               uniqueColours <- unique(colourTable$Group)
@@ -377,8 +367,6 @@ observeEvent(
               cols <- cols[1:numCols]
               cols <- c(cols, "#a9a9a9")
               names(cols) <- c(uniqueColours, "Other")
-              
-              
               sampleList <- rownames(logTPM)
               for(i in 1:length(sampleList)){
                 if(sampleList[i] %in% samplesToColour){
@@ -387,9 +375,7 @@ observeEvent(
                   sampleList[i] <- "Other"
                 }
               }
-              
               names(sampleList) <- rownames(logTPM)
-              
               tsne <- tSNEobject()
               tsne_points <- as.data.frame(tsne$Y)
               tsne_points <- cbind(tsne_points, Diagnosis = as.vector(cncType), CancerCategory = as.vector(cncType2), SampleID = rownames(logTPM), Group = sampleList)
@@ -506,16 +492,12 @@ observeEvent(
             } else if(input$tSNEbroadCategories == "broad"){
               cncInfo <- tSNEpatientMetadataAlt()
               cncInfo <- t(cncInfo)
-              
               cncType <- cncInfo[1,-1]
               cncType2 <- cncInfo[3,-1]
-              
               logTPM <- tSNETpmObject()
-              
               tsne <- tSNEobject()
               tsne_points <- as.data.frame(tsne$Y)
               tsne_points <- cbind(tsne_points, Diagnosis = as.vector(cncType), CancerCategory = as.vector(cncType2), SampleID = rownames(logTPM))
-              
               colourTable <- tSNEcolourTable()
               colourTable <- colourTable[c((nrow(colourTable)-3):nrow(colourTable)),]
               CancerColours <- colourTable$cols
@@ -561,12 +543,9 @@ observeEvent(
             if(!is.null(id)){
               cncInfo <- tSNEpatientMetadataAlt()
               cncInfo <- t(cncInfo)
-              
               cncType <- cncInfo[1,-1]
               cncType2 <- cncInfo[3,-1]
-              
               logTPM <- tSNETpmObject()
-              
               colourTable <- tSNEcolourTable()
               samplesToColour <- colourTable$Patient
               uniqueColours <- unique(colourTable$Group)
@@ -575,8 +554,6 @@ observeEvent(
               cols <- cols[1:numCols]
               cols <- c(cols, "#a9a9a9")
               names(cols) <- c(uniqueColours, "Other")
-              
-              
               sampleList <- rownames(logTPM)
               for(i in 1:length(sampleList)){
                 if(sampleList[i] %in% samplesToColour){
@@ -585,9 +562,7 @@ observeEvent(
                   sampleList[i] <- "Other"
                 }
               }
-              
               names(sampleList) <- rownames(logTPM)
-              
               tsne <- tSNEobject()
               tsne_points <- as.data.frame(tsne$Y)
               tsne_points <- cbind(tsne_points, Diagnosis = as.vector(cncType), CancerCategory = as.vector(cncType2), SampleID = rownames(logTPM), Group = sampleList)
