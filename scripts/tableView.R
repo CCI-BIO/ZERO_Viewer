@@ -1,0 +1,267 @@
+## tableView.R
+## Server logic for table view in ZERO app
+##
+## Date: 17/07/2019
+## Last updated: 17/07/2019
+
+# Online or Offline mode
+observe({
+  if(input$selectOffline == "online"){
+    # Select sample for table view
+    output$sampleSelect <- renderUI({
+      tryCatch(
+        expr = {
+          patientMetadata <- read.delim(paste(dirLoc, "Patients_Diagnosis.txt", sep = ""), header = T, stringsAsFactors = F)
+          sampleSelectList <- patientMetadata$Patient.ID
+          names(sampleSelectList) <- sampleSelectList
+          selectizeInput(
+            inputId = "sampleSelect2",
+            label = h4("Select patient ID:"),
+            choices = sampleSelectList,
+            multiple = F,
+            selected = NULL
+          )
+        },
+        error = function(e){
+          return(NULL)
+        }
+      )
+    })
+    
+    # Select table to view
+    output$tableSelect <- renderUI({
+      tryCatch(
+        expr = {
+          sampleToView <- input$sampleSelect2
+          if(length(grep(pattern = "P00", x = sampleToView)) > 0){
+            sampleToViewNoSecondary <- gsub(pattern = "-.*", replacement = "", x = sampleToView)
+          } else {
+            sampleToViewNoSecondary <- sampleToView
+          }
+          fileList <- list.files(path = paste(dirLoc, sampleToViewNoSecondary, "/", sep = ""), full.names = F)
+          fileList <- fileList[grep(pattern = "-FC", x = fileList)]  # Remove extra - after FC
+          selectizeInput(
+            inputId = "tableSelect2",
+            label = h4("Select table to view:"),
+            choices = fileList,
+            multiple = F,
+            selected = NULL
+        },
+        error = function(e){
+          return(NULL)
+        }
+      )
+    })
+    
+    # Hide offline inputs
+    output$patientMetadata <- renderUI({NULL})
+    output$TPMcounts <- renderUI({NULL})
+    
+  } else if(input$selectOffline == "offline"){
+    # Select file for table view
+    output$sampleSelect <- renderUI({
+      fileInput(
+        inputId = "tableFile",
+        label = h4("Upload table file:")
+      )
+    })
+    # Select patient diagnosis file
+    output$patientMetadata <- renderUI({
+      fileInput(
+        inputId = "patientMetadata2",
+        label = h4("Upload patient diagnosis file:")
+      )
+    })
+    # Select TPM data table
+    output$TPMcounts <- renderUI({
+      fileInput(
+        inputId = "TPMcounts2",
+        label = h4("Upload TPM counts file:")
+      )
+    })
+    # Set table select to NULL
+    output$tableSelect <- renderUI({NULL})
+  }
+})
+
+# Select genes based on specified method
+output$selectGenes <- renderUI({
+  if(input$selectGeneInput == "all"){
+    return(NULL)
+  } else if(input$selectGeneInput == "specific"){
+    selectizeInput(
+      inputId = "geneSelectSpecifc",
+      label = h4("Select genes to show:"),
+      choices = NULL,
+      multiple = T
+    )
+  } else if(input$selectGeneInput == "list"){
+    fileInput(
+      inputId = "geneListFile",
+      label = h4("Upload gene list:")
+    )
+  }
+})
+
+# Server side selectize input for genes
+observeEvent(
+  c(input$selectOffline, input$sampleSelect2, input$tableSelect2, input$selectGeneInput, input$patientMetadata2, input$TPMcounts2),
+  {
+    tryCatch(
+      expr = {
+        if(input$selectOffline == "offline"){
+          inFile <- input[["tableFile"]]
+          if(is.null(inFile)){
+            return(NULL)
+          } else {
+            tableToView <- read.delim(inFile$datapath, header = T, stringsAsFactors = F)
+            geneList <- as.character(tableToView$gene_id)
+            updateSelectizeInput(
+              session = session,
+              inputId = "geneSelectSpecifc",
+              choices = geneList,
+              selected = NULL,
+              server = T
+            )
+          }
+          inFile2 <- input[["patientMetadata2"]]
+          if(is.null(inFile2)){
+            return(NULL)
+          } else {
+            patientMetadata <- read.delim(inFile2$datapath, header = T, stringsAsFactors = F)
+            histologyList <- patientMetadata[,c("Diagnosis", "FinalDiagnosis")]
+            histologyListChoices <- histologyList$Diagnosis
+            names(histologyListChoices) <- histologyList$FinalDiagnosis
+            updateSelectizeInput(
+              session = session,
+              inputId = "histologySelect",
+              choices = histologyListChoices,
+              selected = NULL,
+              server = T
+            )
+          }
+        } else if(input$selectOffline == "online"){
+          sampleToView <- input$sampleSelect2
+          if(length(grep(pattern = "P00", x = sampleToView)) > 0){
+            sampleToViewNoSecondary <- gsub(pattern = "-.*", replacement = "", x = sampleToView)
+          } else {
+            sampleToViewNoSecondary <- sampleToView
+          }
+          tableToView <- read.delim(paste(dirLoc, sampleToViewNoSecondary, "/", input$tableSelect2, sep = ""), header = T, stringsAsFactors = F)
+          geneList <- as.character(tableToView$gene_id)
+          updateSelectizeInput(
+            session = session,
+            inputId = "geneSelectSpecifc",
+            choices = geneList,
+            selected = NULL,
+            server = T
+          )
+          patientMetadata <- read.delim(paste(dirLoc, "/Patients_Diagnosis.txt", sep = ""), header = T, stringsAsFactors = F)
+          histologyList <- patientMetadata[,c("Diagnosis", "FinalDiagnosis")]
+          histologyListChoices <- histologyList$Diagnosis
+          names(histologyListChoices) <- histologyList$FinalDiagnosis
+          updateSelectizeInput(
+            session = session,
+            inputId = "histologySelect",
+            choices = histologyListChoices,
+            selected = NULL,
+            server = T
+          )
+        }
+      },
+      error = function(e){
+        return(NULL)
+      }
+    )
+  }
+)
+
+# Render table for viewing
+output$tablePreview <- renderDT(
+  {
+    tryCatch(
+      expr = {
+        if(input$selectOffline == "offline"){
+          inFile <- input[["tableFile"]]
+          if(is.null(inFile)){
+            return(NULL)
+          } else {
+            tableToView <- read.delim(inFile$datapath, header = T, stringsAsFactors = F)
+          }
+        }
+        if(input$selectOffline == "online"){
+          sampleToView <- input$sampleSelect2
+          if(length(grep(pattern = "P00", x = sampleToView)) > 0){
+            sampleToViewNoSecondary <- gsub(pattern = "-.*", replacement = "", x = sampleToView)
+          } else {
+            sampleToViewNoSecondary <- sampleToView
+          }
+          tableToView <- read.delim(paste(dirLoc, sampleToViewNoSecondary, "/", input$tableSelect2, sep = ""), header = T, stringsAsFactors = F)
+        }
+        if("MeanTPM" %in% colnames(tableToView)){
+          tableToView <- tableToView[,c("gene_id", "FC", "zscoreMean", "MeanTPM", "MedianTPM")]
+        } else {
+          tableToView <- tableToView[,c("gene_id", "FC", "zscoreMean", "MedianTPM")]
+        }
+        if(input$selectGeneInput == "specific"){
+          tableToView <- tableToView[which(tableToView$gene_id %in% input$geneSelectSpecifc),]
+        }
+        if(input$selectGeneInput == "list"){
+          inFile <- input[["geneListFile"]]
+          if(is.null(inFile)){
+            geneList <- NULL
+          } else {
+            geneList <- readLines(inFile$datapath)
+          }
+          tableToView <- tableToView[which(tableToView$gene_id %in% geneList),]
+        }
+        if(!is.null(input$histologySelect)){
+          if(input$selectOffline == "offline"){
+            inFile2 <- input[["patientMetadata2"]]
+            if(is.null(inFile2)){
+              return(NULL)
+            } else {
+              patientMetadata <- read.delim(inFile2$datapath, header = T, stringsAsFactors = F)
+            }
+            inFile3 <- input[["TPMcounts2"]]
+            if(is.null(inFile3)){
+              return(NULL)
+            } else {
+              TPMcounts <- read.delim(inFile3$datapath, header = T, stringsAsFactors = F)
+              TPMcounts <- TPMcounts[which(TPMcounts$gene_id %in% tableToView$gene_id),]
+              rownames(TPMcounts) <- TPMcounts$gene_id
+              TPMcounts <- TPMcounts[,-c(1:2)]
+            }
+          } else if(input$selectOffline == "online"){
+            patientMetadata <- read.delim(paste(dirLoc, "/Patients_Diagnosis.txt", sep = ""), header = T, stringsAsFactors = F)
+            TPMcounts <- read.delim(paste(dirLoc, "/GeneExpression_TPM_Counts.txt", sep = ""), header = T, stringsAsFactors = F)
+            TPMcounts <- TPMcounts[which(TPMcounts$gene_id %in% tableToView$gene_id),]
+            rownames(TPMcounts) <- TPMcounts$gene_id
+            TPMcounts <- TPMcounts[,-c(1:2)]
+          }
+          selectHist <- input$histologySelect
+          for(i in 1:length(selectHist)){
+            histToCalc <- selectHist[i]
+            patientMetadataSubset <- patientMetadata$Patient.ID[which(patientMetadata$Diagnosis %in% histToCalc)]
+            TPMcountssubset <- TPMcounts[, which(colnames(TPMcounts) %in% patientMetadataSubset),drop=F]
+            TPMmean <- rowMeans(TPMcountssubset)
+            TPMmedian <- apply(TPMcountssubset, 1, function(x) median(x))
+            TPMStats <- cbind(TPMmean, TPMmedian)
+            rownames(TPMStats) <- rownames(TPMcountssubset)
+            colnames(TPMStats) <- c(paste(histToCalc, "_MeanTPM", sep = ""), paste(histToCalc, "_MedianTPM", sep = ""))
+            tableToView <- merge(x = tableToView, y = TPMStats, by.x = "gene_id", by.y = "row.names")
+          }
+        }
+        output$tableDownload <- downloadHandler(
+          filename = function(){paste("filtered_table.txt", sep = "")},
+          content = function(file){write.table(tableToView, file, row.names = F, sep = "\t", quote = F)}
+        )
+        return(tableToView)
+      },
+      error = function(e){
+        return(NULL)
+      }
+    )
+  }, 
+  options = list(pageLength = 25)
+)

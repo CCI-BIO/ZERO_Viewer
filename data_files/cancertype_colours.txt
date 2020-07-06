@@ -1,0 +1,29 @@
+cancertype	cols
+EWS	antiquewhite3
+HGG	aquamarine4
+NBL	black
+BALL	blue2
+EPD	darkorchid1
+MB	brown1
+Solid other	brown4
+DMG	cadetblue3
+Lymphoma	chartreuse3
+OST	chocolate3
+RMS FP	deepskyblue
+CNS other	darkgoldenrod1
+Sarcoma other	deeppink2
+TALL	darkgreen
+Rhabdoid MRT	dodgerblue2
+CNS embryonal	lightpink
+WT	yellow3
+AML	darkolivegreen2
+MPNST	aquamarine2
+Rhabdoid ATRT	darkorchid4
+Glioma other	darksalmon
+RMS FN	gray48
+HM other	darkgoldenrod4
+Rhabdoid small cell type	lightcoral
+ST	brown1
+BT	cornflowerblue
+NB	chartreuse3
+HM	darkorchid1
