@@ -1,5 +1,6 @@
 ## SignaturePlot_shiny.R
 ## Server logic for signature plot generation
+##
 ## Created by Nisitha Jayatilleke
 ## Date: 23/07/2019
 ## Last updated: 07/07/2020
