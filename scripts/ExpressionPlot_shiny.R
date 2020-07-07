@@ -1,5 +1,7 @@
 ## ExpressionPlot_shiny.R
-## Compiled by Pooja Venkat
+## Server logic for creating an expression plot
+##
+## Created by Pooja Venkat
 ## Date: 16/07/2019
 ## Last updated: 07/07/2020
 
