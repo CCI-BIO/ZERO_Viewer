@@ -1,5 +1,5 @@
 ## SignaturePlot_shiny.R
-##
+## Server logic for signature plot generation
 ## Created by Nisitha Jayatilleke
 ## Date: 23/07/2019
 ## Last updated: 07/07/2020
@@ -11,6 +11,7 @@ observeEvent(
     shinyjs::disable("SigPlotDownload")
     # Online widgets
     if(input$SigPlotSelectOffline == "online"){
+      # TPM count table
       output$SigPlotTPMCounts <- renderUI({
         selectInput(
           inputId = "SigPlotTPMCounts2", 
@@ -18,6 +19,7 @@ observeEvent(
           choices = "NA"
         )
       })
+      # Metadata table
       output$SigPlotPatientMetadata <- renderUI({
         selectInput(
           inputId = "SigPlotPatientMetadata2", 
@@ -25,6 +27,7 @@ observeEvent(
           choices = "NA"
         )
       })
+      # Signature file for offline (turn off)
       output$SigPlotSignatureGenes <- renderUI({
         selectInput(
           inputId = "SigPlotSignatureGenes2", 
@@ -32,6 +35,7 @@ observeEvent(
           choices = "NA"
         )
       })
+      # Signature file for online (turn on)
       output$SigPlotSignatureFile <- renderUI({
         fileList <- list.files(path = "data_files/", pattern = "expression_profile_genes.txt", full.names = F)
         names(fileList) <- fileList
@@ -49,24 +53,28 @@ observeEvent(
     }
     # Offline widgets
     if(input$SigPlotSelectOffline == "offline"){
+      # TPM count table
       output$SigPlotTPMCounts <- renderUI({
         fileInput(
           inputId = "SigPlotTPMCounts2",
           label = h4("Upload TPM counts file:")
         )
       })
+      # Metadata table
       output$SigPlotPatientMetadata <- renderUI({
         fileInput(
           inputId = "SigPlotPatientMetadata2",
           label = h4("Upload patient diagnosis file:")
         )
       })
+      # Signature file for offline (turn on)
       output$SigPlotSignatureGenes <- renderUI({
         fileInput(
           inputId = "SigPlotSignatureGenes2",
           label = h4("Upload gene signature file:")
         )
       })
+      # Signature file for online (turn off)
       output$SigPlotSignatureFile <- renderUI({
         fileInput(
           inputId = "SigPlotSignatureFile2",
@@ -241,6 +249,7 @@ observeEvent(
         Median.Value <- patientTPM[order(patientTPM$Patient.Value, decreasing = T),]$Median
         patientTPM$Gene <- factor(patientTPM$Gene, levels = gene_levels)
         
+        # Create plot
         p <- ggplot(data = patientTPM, mapping = aes(x = Gene, y = Patient.Value)) + 
           scale_x_discrete() +
           geom_segment(data = patientTPM, mapping = aes(x = as.numeric(0.5:(0.5+n-1)), xend = as.numeric(1.5:(1.5+n-1)), y = Mean.Value, yend = Mean.Value, value = Mean.Value, gene = Gene.Name, col = "Mean"), size = 1) +
@@ -256,7 +265,10 @@ observeEvent(
           content = function(file){ggsave(filename = file, plot = (p + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))), device = "png", width = 8)}
         )
         
+        # Enable download button
         shinyjs::enable("SigPlotDownload")
+                              
+        # Create plotly version for display
         ggplotly(print(p), tooltip = c("patientID", "value", "gene"))
       })
     }
@@ -319,6 +331,7 @@ observeEvent(
         Median.Value <- patientTPM[order(patientTPM$Patient.Value, decreasing = T),]$Median
         patientTPM$Gene <- factor(patientTPM$Gene, levels = gene_levels)
         
+        # Create plot
         p <- ggplot(data = patientTPM, mapping = aes(x = Gene, y = Patient.Value)) + 
           scale_x_discrete() +
           geom_segment(data = patientTPM, mapping = aes(x = as.numeric(0.5:(0.5+n-1)), xend = as.numeric(1.5:(1.5+n-1)), y = Mean.Value, yend = Mean.Value, value = Mean.Value, gene = Gene.Name, col = "Mean"), size = 1) +
@@ -334,7 +347,10 @@ observeEvent(
           content = function(file){ggsave(filename = file, plot = (p + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))), device = "png", width = 8)}
         )
         
+        # Enable download button
         shinyjs::enable("SigPlotDownload")
+                              
+        # Create plotly version for display
         ggplotly(print(p), tooltip = c("patientID", "value", "gene"))
       })
     }
