@@ -3,13 +3,14 @@
 ##
 ## Created by Nisitha Jayatilleke
 ## Date: 18/07/2019
-## Last updated: 18/07/2019
+## Last updated: 07/07/2020
 
 # Initialise widgets
 observeEvent(
   c(input$tSNEselectOffline, input$tSNEcolourSelect),
   {
     shinyjs::disable("tSNEDownload")
+    # Online widgets
     if(input$tSNEselectOffline == "online"){
       output$tSNETPMCounts <- renderUI({
         selectInput(
@@ -49,6 +50,7 @@ observeEvent(
       shinyjs::hide("tSNETPMCounts")
       shinyjs::hide("tSNEPatientMetadata")
     } else if(input$tSNEselectOffline == "offline"){
+      # Offline widgets
       output$tSNETPMCounts <- renderUI({
         fileInput(
           inputId = "tSNETPMCounts2",
@@ -336,6 +338,7 @@ observeEvent(
               filename = function(){filename},
               content = function(file){ggsave(filename = file, plot = p, device = "png", width = 8)}
             )
+            # Enable download button
             shinyjs::enable("tSNEDownload")
             
             # Plotly output
@@ -400,6 +403,7 @@ observeEvent(
                 filename = function(){filename},
                 content = function(file){ggsave(filename = file, plot = p, device = "png", width = 8)}
               )
+              # Enable download button
               shinyjs::enable("tSNEDownload")
               
               # Plotly output
@@ -523,6 +527,7 @@ observeEvent(
               filename = function(){filename},
               content = function(file){ggsave(filename = file, plot = p, device = "png", width = 8)}
             )
+            # Enable download button
             shinyjs::enable("tSNEDownload")
             
             # Plotly output
@@ -587,6 +592,7 @@ observeEvent(
                 filename = function(){filename},
                 content = function(file){ggsave(filename = file, plot = p, device = "png", width = 8)}
               )
+              # Enable download button
               shinyjs::enable("tSNEDownload")
               
               # Plotly output
