@@ -200,6 +200,7 @@ ui <- fluidPage(
           plotlyOutput("plotarea_dot", height = "800px", width = "900px")
         )
       ),
+      # Download plot button
       fluidRow(
         column(
           12,
