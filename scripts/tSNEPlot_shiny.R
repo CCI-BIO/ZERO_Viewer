@@ -1,5 +1,5 @@
 ## tSNEPlot_shiny.R
-## Create a tSNE plot in ZERO app
+## Server logic for creating a tSNE plot
 ##
 ## Created by Nisitha Jayatilleke
 ## Date: 18/07/2019
