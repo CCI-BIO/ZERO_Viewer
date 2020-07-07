@@ -1,5 +1,5 @@
 ## tableView.R
-## Display tables in ZERO app
+## Server logic for viewing and manipulating tables
 ##
 ## Created by Nisitha Jayatilleke
 ## Date: 17/07/2019
@@ -7,6 +7,7 @@
 
 # Online or Offline mode
 observe({
+  # Online mode
   if(input$selectOffline == "online"){
     # Select sample for table view
     output$sampleSelect <- renderUI({
@@ -59,6 +60,7 @@ observe({
     output$TPMcounts <- renderUI({NULL})
     
   } else if(input$selectOffline == "offline"){
+    # Offline mode
     # Select file for table view
     output$sampleSelect <- renderUI({
       fileInput(
