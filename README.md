@@ -36,7 +36,7 @@ The source code is available to download through the current release or the git 
 
 **When the application opens in the browser it is greyed out**
 
-This event indicates that there has been a crash in the shiny application script. If you come across this issue please navigate to 'Users/<username>/Documents/ZERO Viewer/log/' and create an issue on the git with the contents of the *error.log* file.
+This event indicates that there has been a crash in the shiny application script. If you come across this issue please navigate to 'Users/\<username\>/Documents/ZERO Viewer/log/' and create an issue on the git with the contents of the *error.log* file.
 
 **The application will not open at all when I try to click on the launch icon**
 
