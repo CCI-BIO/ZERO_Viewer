@@ -34,14 +34,14 @@ The source code is available to download through the current release or the git 
 
 ## Troubleshooting and common issues
 
-** When the application opens in the browser it is greyed out **
+**When the application opens in the browser it is greyed out**
 
 This event indicates that there has been a crash in the shiny application script. If you come across this issue please navigate to <user>/Documents/ZERO Viewer/log/ and create an issue on the git with the contents of the *error.log* file.
 
-** The application will not open at all when I try to click on the launch icon **
+**The application will not open at all when I try to click on the launch icon**
 
 Chances are there was a crash in the previous instance of the application running. If so, please check your error.log file and post the issue on the git page. Sometimes there may be an unexpected closure of the application and a instance of R for window front end will be still running in the background. Please open task manager (Ctrl + Shift + Esc) and find any instance of R for windows front end and end those tasks. Once that is done, try and re-open the application. 
 
-** An error saying a packages version is not compatiable shows up when launching the application **
+**An error saying a packages version is not compatiable shows up when launching the application**
 
 If you see this error, there may have been an signficant update in the packages. Please submit an issue on the git page and we will update the application as soon as possible. 
