@@ -201,11 +201,12 @@ output$tablePreview <- renderDT(
           }
           tableToView <- read.delim(paste(dirLoc, sampleToViewNoSecondary, "/", input$tableSelect2, sep = ""), header = T, stringsAsFactors = F)
         }
-        if("MeanTPM" %in% colnames(tableToView)){
-          tableToView <- tableToView[,c("gene_id", "FC", "zscoreMean", "MeanTPM", "MedianTPM")]
-        } else {
-          tableToView <- tableToView[,c("gene_id", "FC", "zscoreMean", "MedianTPM")]
-        }
+        ## LEGACY CODE - FOR ZERO FILES ##
+        #if("MeanTPM" %in% colnames(tableToView)){
+        #  tableToView <- tableToView[,c("gene_id", "FC", "zscoreMean", "MeanTPM", "MedianTPM")]
+        #} else {
+        #  tableToView <- tableToView[,c("gene_id", "FC", "zscoreMean", "MedianTPM")]
+        #}
         if(input$selectGeneInput == "specific"){
           tableToView <- tableToView[which(tableToView$gene_id %in% input$geneSelectSpecifc),]
         }
