@@ -3,7 +3,7 @@
 ##
 ## Created by Nisitha Jayatilleke
 ## Date: 18/07/2019
-## Last updated: 07/07/2020
+## Last updated: 29/07/2020
 
 # Initialise widgets
 observeEvent(
@@ -12,6 +12,7 @@ observeEvent(
     shinyjs::disable("tSNEDownload")
     # Online widgets
     if(input$tSNEselectOffline == "online"){
+      shinyjs::show("tSNEbroadCategories")
       output$tSNETPMCounts <- renderUI({
         selectInput(
           inputId = "tSNETPMCounts2", 
@@ -64,6 +65,7 @@ observeEvent(
         )
       })
       if(input$tSNEcolourSelect == "list"){
+        shinyjs::show("tSNEbroadCategories")
         output$tSNEColourTable <- renderUI({
           fileInput(
             inputId = "tSNEColourTable2",
@@ -266,9 +268,10 @@ observeEvent(
 
       # Create tsne output
       tSNEobject <- reactive({
+        perplexity <- input$tSNEperplexitySelect
         logTPM <- tSNETpmObject()
         set.seed(1234)
-        tsne <- Rtsne(logTPM, dims = 2, perplexity = 20, verbose = TRUE, max_iter = 500, check_duplicates = F)
+        tsne <- Rtsne(logTPM, dims = 2, perplexity = perplexity, verbose = TRUE, max_iter = 500, check_duplicates = F)
         return(tsne)
       })
       
@@ -451,9 +454,10 @@ observeEvent(
 
       # Create tsne output
       tSNEobject <- reactive({
+        perplexity <- input$tSNEperplexitySelect
         logTPM <- tSNETpmObject()
         set.seed(1234)
-        tsne <- Rtsne(logTPM, dims = 2, perplexity = 20, verbose = TRUE, max_iter = 500, check_duplicates = F)
+        tsne <- Rtsne(logTPM, dims = 2, perplexity = perplexity, verbose = TRUE, max_iter = 500, check_duplicates = F)
         return(tsne)
       })
 
