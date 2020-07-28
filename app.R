@@ -2,7 +2,7 @@
 ## 
 ## Created by the CCI Bioinformatics team (Nisitha Jayatilleke, Pooja Venkat and Chelsea Mayoh)
 ## Date: 15/07/2019
-## Last updated: 07/07/2020
+## Last updated: 29/07/2020
 
 # Import relevant libraries
 library(shiny)
@@ -229,7 +229,7 @@ ui <- fluidPage(
           6,
           radioButtons(
             inputId = "tSNEcolourSelect",
-            label = "Select colour table input method:",
+            label = h4("Select colour table input method:"),
             choices = list(
               "Colour by specified categories" = "list",
               "Custom user input" = "user"
@@ -240,7 +240,7 @@ ui <- fluidPage(
           6,
           radioButtons(
             inputId = "tSNEbroadCategories",
-            label = "Select colouring catergory:",
+            label = h4("Select colouring catergory:"),
             choices = list(
               "Colour by Diagnosis" = "specific",
               "Colour by Cancer Category" = "broad"
@@ -266,8 +266,18 @@ ui <- fluidPage(
       # Select sample for plotting 
       fluidRow(
         column(
-          12,
+          6,
           uiOutput("tSNEsampleSelect")
+        ),
+        column(
+          6,
+          numericInput(
+            inputId = "tSNEperplexitySelect", 
+            label = h4("Select perplexity for tSNE:"), 
+            value = 20, 
+            min = 1, 
+            step = 1
+          )
         )
       ),
       # Output tSNE plotly
