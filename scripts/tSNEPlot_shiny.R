@@ -306,10 +306,10 @@ observeEvent(
                   scale_colour_manual(values = CancerColours) +
                   labs(colour = "Cancer Type") +
                   theme_classic()
-                filename <- "ZERO_tsne.png"
+                filename <- "tsne.png"
                 if(id != "None"){
                   p <- p + geom_point(data = tsne_points[tsne_points$SampleID == id,], size = 3, shape = 8)
-                  filename <- paste("ZERO_tsne_", id, "_highlighted.png", sep = "")
+                  filename <- paste("tsne_", id, "_highlighted.png", sep = "")
                 }
               })
             } else if(input$tSNEbroadCategories == "broad"){
@@ -338,10 +338,10 @@ observeEvent(
                   scale_colour_manual(values = CancerColours) +
                   labs(colour = "Cancer Type") +
                   theme_classic()
-                filename <- "ZERO_tsne.png"
+                filename <- "tsne.png"
                 if(id != "None"){
                   p <- p + geom_point(data = tsne_points[tsne_points$SampleID == id,], size = 3, shape = 8)
-                  filename <- paste("ZERO_tsne_", id, "_highlighted.png", sep = "")
+                  filename <- paste("tsne_", id, "_highlighted.png", sep = "")
                 }
               })
             }
@@ -404,10 +404,10 @@ observeEvent(
                   scale_colour_manual(values = cols) +
                   labs(colour = "Cancer Type") +
                   theme_classic()
-                filename <- "ZERO_tsne.png"
+                filename <- "tsne.png"
                 if(id != "None"){
                   p <- p + geom_point(data = tsne_points[tsne_points$SampleID == id,], size = 3, shape = 8)
-                  filename <- paste("ZERO_tsne_", id, "_highlighted.png", sep = "")
+                  filename <- paste("tsne_", id, "_highlighted.png", sep = "")
                 }
               })
               
@@ -502,10 +502,10 @@ observeEvent(
                   scale_colour_manual(values = CancerColours) +
                   labs(colour = "Cancer Type") +
                   theme_classic()
-                filename <- "ZERO_tsne.png"
+                filename <- "tsne.png"
                 if(id != "None"){
                   p <- p + geom_point(data = tsne_points[tsne_points$SampleID == id,], size = 3, shape = 8)
-                  filename <- paste("ZERO_tsne_", id, "_highlighted.png", sep = "")
+                  filename <- paste("tsne_", id, "_highlighted.png", sep = "")
                 }
               })
             } else if(input$tSNEbroadCategories == "broad"){
@@ -534,10 +534,10 @@ observeEvent(
                   scale_colour_manual(values = CancerColours) +
                   labs(colour = "Cancer Type") +
                   theme_classic()
-                filename <- "ZERO_tsne.png"
+                filename <- "tsne.png"
                 if(id != "None"){
                   p <- p + geom_point(data = tsne_points[tsne_points$SampleID == id,], size = 3, shape = 8)
-                  filename <- paste("ZERO_tsne_", id, "_highlighted.png", sep = "")
+                  filename <- paste("tsne_", id, "_highlighted.png", sep = "")
                 }
               })
             }
@@ -600,10 +600,10 @@ observeEvent(
                   scale_colour_manual(values = cols) +
                   labs(colour = "Cancer Type") +
                   theme_classic()
-                filename <- "ZERO_tsne.png"
+                filename <- "tsne.png"
                 if(id != "None"){
                   p <- p + geom_point(data = tsne_points[tsne_points$SampleID == id,], size = 3, shape = 8)
-                  filename <- paste("ZERO_tsne_", id, "_highlighted.png", sep = "")
+                  filename <- paste("tsne_", id, "_highlighted.png", sep = "")
                 }
               })
               
