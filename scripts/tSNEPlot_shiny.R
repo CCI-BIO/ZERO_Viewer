@@ -238,7 +238,7 @@ observeEvent(
 
 # Plot online trigger
 observeEvent(
-  c(input$tSNEselectOffline, input$tSNEcolourSelect, input$tSNEColourTable2, input$tSNEbroadCategories),
+  c(input$tSNEselectOffline, input$tSNEcolourSelect, input$tSNEColourTable2, input$tSNEbroadCategories, input$tSNEperplexitySelect),
   {
     if(input$tSNEselectOffline == "online"){
       # Select sample for plotting
@@ -283,14 +283,19 @@ observeEvent(
             if(input$tSNEbroadCategories == "specific"){
               cncInfo <- tSNEpatientMetadataAlt()
               cncInfo <- t(cncInfo)
+              
               cncType <- cncInfo[1,-1]
               cncType2 <- cncInfo[3,-1]
+              
               logTPM <- tSNETpmObject()
+              
               tsne <- tSNEobject()
               tsne_points <- as.data.frame(tsne$Y)
               tsne_points <- cbind(tsne_points, Diagnosis = as.vector(cncType), CancerCategory = as.vector(cncType2), SampleID = rownames(logTPM))
+              
               colourTable <- tSNEcolourTable()
-              colourTable <- colourTable[-c((nrow(colourTable)-3):nrow(colourTable)),]
+              #colourTable <- colourTable[-c((nrow(colourTable)-3):nrow(colourTable)),]
+              colourTable <- colourTable[which(colourTable$cancertype %in% cncType),]
               CancerColours <- colourTable$cols
               names(CancerColours) <- unique(colourTable$cancertype)
               
@@ -310,14 +315,19 @@ observeEvent(
             } else if(input$tSNEbroadCategories == "broad"){
               cncInfo <- tSNEpatientMetadataAlt()
               cncInfo <- t(cncInfo)
+              
               cncType <- cncInfo[1,-1]
               cncType2 <- cncInfo[3,-1]
+              
               logTPM <- tSNETpmObject()
+              
               tsne <- tSNEobject()
               tsne_points <- as.data.frame(tsne$Y)
               tsne_points <- cbind(tsne_points, Diagnosis = as.vector(cncType), CancerCategory = as.vector(cncType2), SampleID = rownames(logTPM))
+              
               colourTable <- tSNEcolourTable()
-              colourTable <- colourTable[c((nrow(colourTable)-3):nrow(colourTable)),]
+              #colourTable <- colourTable[c((nrow(colourTable)-3):nrow(colourTable)),]
+              colourTable <- colourTable[which(colourTable$cancertype %in% cncType),]
               CancerColours <- colourTable$cols
               names(CancerColours) <- unique(colourTable$cancertype)
               
@@ -424,7 +434,7 @@ observeEvent(
 
 # Plot offline trigger
 observeEvent(
-  c(input$tSNEselectOffline, input$tSNETPMCounts2, input$tSNEPatientMetadata2, input$tSNEcolourSelect, input$tSNEColourTable2, input$tSNEbroadCategories),
+  c(input$tSNEselectOffline, input$tSNETPMCounts2, input$tSNEPatientMetadata2, input$tSNEcolourSelect, input$tSNEColourTable2, input$tSNEbroadCategories, input$tSNEperplexitySelect),
   {
     if(input$tSNEselectOffline == "offline"){
       # Select sample for plotting
@@ -480,7 +490,8 @@ observeEvent(
               tsne_points <- cbind(tsne_points, Diagnosis = as.vector(cncType), CancerCategory = as.vector(cncType2), SampleID = rownames(logTPM))
               
               colourTable <- tSNEcolourTable()
-              colourTable <- colourTable[-c((nrow(colourTable)-3):nrow(colourTable)),]
+              #colourTable <- colourTable[-c((nrow(colourTable)-3):nrow(colourTable)),]
+              colourTable <- colourTable[which(colourTable$cancertype %in% cncType),]
               CancerColours <- colourTable$cols
               names(CancerColours) <- unique(colourTable$cancertype)
               
@@ -500,14 +511,19 @@ observeEvent(
             } else if(input$tSNEbroadCategories == "broad"){
               cncInfo <- tSNEpatientMetadataAlt()
               cncInfo <- t(cncInfo)
+              
               cncType <- cncInfo[1,-1]
               cncType2 <- cncInfo[3,-1]
+              
               logTPM <- tSNETpmObject()
+              
               tsne <- tSNEobject()
               tsne_points <- as.data.frame(tsne$Y)
               tsne_points <- cbind(tsne_points, Diagnosis = as.vector(cncType), CancerCategory = as.vector(cncType2), SampleID = rownames(logTPM))
+              
               colourTable <- tSNEcolourTable()
-              colourTable <- colourTable[c((nrow(colourTable)-3):nrow(colourTable)),]
+              #colourTable <- colourTable[c((nrow(colourTable)-3):nrow(colourTable)),]
+              colourTable <- colourTable[which(colourTable$cancertype %in% cncType2),]
               CancerColours <- colourTable$cols
               names(CancerColours) <- unique(colourTable$cancertype)
               
