@@ -62,3 +62,7 @@ Chances are there was a crash in the previous instance of the application runnin
 **An error saying a packages version is not compatiable shows up when launching the application**
 
 If you see this error, there may have been an signficant update in the packages. Please submit an issue on the git page and we will update the application as soon as possible. 
+
+## Contact information
+
+If there are any issues with the application we encourage you to post on the issues section of this github page. If you are unable to do so please get in touch with either Nisitha Jayatilleke (njayatilleke@ccia.org.au) or Pooja Venkat (pvenkat@ccia.org.au).
