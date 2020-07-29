@@ -19,6 +19,7 @@
   - plotly
   - tidyr
   - RColorBrewer
+  - knitr
   
 ## Installation and running the application
 
@@ -28,9 +29,23 @@ A compiled standalone executable is available in the current release section of 
 
 Run the executable and follow the prompts. The installation directory will be located in your user documents folder. Once installed, the first run of the application may take several minutes as the R packages are installed. A browser window will automatically open with the application GUI when ready. Succesive runs of the application will have a much quicker startup time as the R packages will already be installed. 
 
-### Source code
+### Source code (windows or mac)
 
-The source code is available to download through the current release or the git repository. To run the application from the source you will require a qorking installation of R (4.0.x) and Rstudio as well as the required R packages (see additional requirements for running from source). Open the app.R file in R studio and click run the Shiny application. Once the main window pops up click run in browser window. The application must be run in a browser window as the plot download functionality is only availble via browsers.
+The source code is available to download through the current release or the git repository. To run the application from the source you will require a working installation of R (4.0.x) (https://cran.r-project.org/bin/windows/base/) and Rstudio (https://rstudio.com/products/rstudio/download/#download) as well as the required R packages (see additional requirements for running from source). 
+
+Once installed, open Rstudio and run the following to install the necessary packages:
+
+```R
+install.packages(c("shinythemes", "shinyjs", "DT", "Rtsne", "ggplot2", "plotly", "tidyr", "RColorBrewer", "knitr"))
+```
+
+Unzip the source code zip file in any location of your choice. If all packages have been installed correctly in the prior step, open the app.R file (found in the main directory of the source code folder) in R studio and click on the Run App button (see image) which will launch the Shiny application. 
+
+![alt text]( "Logo Title Text 1")
+
+Once the main window pops up click run in browser window. The application must be run in a browser window as the plot download functionality is only availble via browsers.
+
+![alt text]( "Logo Title Text 1")
 
 ## Troubleshooting and common issues
 
