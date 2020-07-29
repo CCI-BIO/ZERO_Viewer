@@ -43,9 +43,11 @@ Unzip the source code zip file in any location of your choice. If all packages h
 
 ![alt text]( "Logo Title Text 1")
 
-Once the main window pops up click run in browser window. The application must be run in a browser window as the plot download functionality is only availble via browsers.
+Once the window pops up, click "Open in Browser". This will open a browser window/tab (default browser) with the application running. Please note that the Rstudio window (where you clicked "Open in Browser", will still be running in the background. Do not close this as this is the main process for the application (else the application will terminate). The application must be run in a browser window as the plot download functionality is only availble via browsers.
 
 ![alt text]( "Logo Title Text 1")
+
+To terminate the program simply close all browser and Rstudio windows.
 
 ## Troubleshooting and common issues
 
