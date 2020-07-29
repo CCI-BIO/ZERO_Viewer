@@ -3,3 +3,6 @@ Diagnosis_1	antiquewhite3
 Diagnosis_2	aquamarine4
 Diagnosis_3	black
 Diagnosis_4	blue2
+Category_1	darkorchid1
+Category_2	chartreuse3
+Category_3	brown4
