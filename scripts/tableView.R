@@ -48,6 +48,7 @@ observe({
             choices = fileList,
             multiple = F,
             selected = NULL
+           )
         },
         error = function(e){
           return(NULL)
