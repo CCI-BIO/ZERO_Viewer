@@ -153,7 +153,7 @@ Expression_Dotplot <- function(id, geneList, tpm, cncInfo, cncInfo_1){
         scale_fill_manual(name="",labels=c("Cohort",as.character(cncType),as.character(id)),values=c("black","green","red"))+
         theme_classic()+theme(axis.text.x = element_text(size=25),axis.title.y=element_text(size=25))+
         labs(y="TPM",x="")
-    filename <- paste("ZERO_gene_", gene, "-rnaseq_personalised.png", sep = "")
+    filename <- paste("Gene_", gene, "-rnaseq_personalised.png", sep = "")
     })
     
     #Create download handler
