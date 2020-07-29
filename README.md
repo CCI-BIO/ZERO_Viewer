@@ -39,13 +39,13 @@ Once installed, open Rstudio and run the following to install the necessary pack
 install.packages(c("shinythemes", "shinyjs", "DT", "Rtsne", "ggplot2", "plotly", "tidyr", "RColorBrewer", "knitr"))
 ```
 
-Unzip the source code zip file in any location of your choice. If all packages have been installed correctly in the prior step, open the app.R file (found in the main directory of the source code folder) in R studio and click on the Run App button (see image) which will launch the Shiny application. 
+Unzip the source code zip file in any location of your choice. If all packages have been installed correctly in the prior step, open the app.R file (found in the main directory of the source code folder) in R studio and click on the "Run App" button (see image) which will launch the Shiny application. 
 
-![alt text]( "Logo Title Text 1")
+![alt text](https://github.com/CCI-BIO/ZERO_Viewer/tree/master/src/appR_location.png "Location of Run App button")
 
 Once the window pops up, click "Open in Browser". This will open a browser window/tab (default browser) with the application running. Please note that the Rstudio window (where you clicked "Open in Browser", will still be running in the background. Do not close this as this is the main process for the application (else the application will terminate). The application must be run in a browser window as the plot download functionality is only availble via browsers.
 
-![alt text]( "Logo Title Text 1")
+![alt text](https://github.com/CCI-BIO/ZERO_Viewer/tree/master/src/openInBrowser.png "Location of Open in Browser button")
 
 To terminate the program simply close all browser and Rstudio windows.
 
