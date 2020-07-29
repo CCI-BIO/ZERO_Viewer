@@ -19,7 +19,7 @@ Colours can be assigned via two methods.
 
 The first method is by using a file containing colours assigned to the Diagnosis or Cancer Category based on the diagnosis file (cancer type colours example). Please note that the headers must be exactly as is shown in the example.
 
-```{r}
+```{r echo=FALSE}
 example_cancer_colors <- read.delim("Example_files/example_cancertype_colours.txt", header=T, sep="\t")
 example_cancer_colors[1:5,]
 ```
@@ -27,7 +27,7 @@ example_cancer_colors[1:5,]
 
 The 'Colour by specified categories' option under 'Select colour table input method' must be selected for this method to be used. A second option for selecting either the Diagnosis or Cancer Category (based on the columns in the cancer type colours input file) will appear under 'Select colouring category'.
 
-```{r out.width = "70%"}
+```{r out.width = "50%", echo=FALSE}
 include_graphics("Instruction_images/tsne_1.png")
 ```
 
@@ -42,7 +42,7 @@ example_custom_colors
 
 The 'Custom user input' option under 'Select colour table input method' must be selected for this method to be used. 
 
-```{r out.width = "70%"}
+```{r out.width = "50%", echo=FALSE}
 include_graphics("Instruction_images/tsne_2.png")
 ```
  
@@ -54,7 +54,7 @@ The application allows the user to identify the cluster within which a patient f
 
 select a patient ID which is highlighted within the group as a star (see example image below).
 
-```{r out.width = "70%"}
+```{r out.width = "50%", echo=FALSE }
 include_graphics("Instruction_images/tsne_3.png")
 ```
 

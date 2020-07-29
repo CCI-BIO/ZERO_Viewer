@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-```{r out.width = "50%", fig.align='center'}
+```{r out.width = "50%", fig.align='center', echo=FALSE}
 include_graphics("Instruction_images/sig_plot.png")
 ```
 
@@ -22,7 +22,7 @@ The three files required to plot the gene signature expressions are :
 
 **3. Text file containing the signature gene sets.** 
 
-```{r}
+```{r echo=FALSE}
 ex_gene_sig <- read.delim("Example_files/example_signatures.txt", header=T, sep="\t")
 ex_gene_sig[1:5,]
 ```

@@ -31,7 +31,7 @@ example[1:5,]
 
 Essentially a TPM counts file which has the TPM expression values for the different patient samples.
 
-```{r }
+```{r echo=FALSE }
 ex_TPM <- read.table("Example_files/Example_GeneExpression_TPM_Counts.txt", header = T, sep="\t")
 ex_TPM[1:4,1:7]
 ```
@@ -47,7 +47,7 @@ The file should have the following columns :
 
 
 
-```{r }
+```{r echo=FALSE }
 ex_patient_diagnosis <- read.delim("Example_files/example_diagnosis.txt", header = T, sep="\t")
 ex_patient_diagnosis
 ```
@@ -59,7 +59,7 @@ ex_patient_diagnosis
 
 The option "Select histology groups to add TPM" provides a drop down menu with all the histologies. Multiple selections are allowed. 
 
-```{r out.width = "50%"}
+```{r out.width = "50%", echo=FALSE}
 include_graphics("Instruction_images/Table_1.png")
 ```
 
@@ -71,22 +71,16 @@ Retrieval gene specific values can be retrieved using either of the three option
 
   *b. Specified genes - User can select genes from a down down menu.*
 
-```{r out.width = "50%"}
-
-include_graphics("Instruction_images/select_genes.png")
-```
-
-
   *c. Gene list - Takes in a text file which has the gene names mentioned.*
 
-```{r out.width = "50%"}
-include_graphics("Instruction_images/gene_list_file.png")
+```{r out.width = "50%", echo=FALSE}
+include_graphics("Instruction_images/select_genes.png")
 ```
 
 
 Additionally, there is a search option provided where in the user can perform a keyword search (see below image (2)) . 
 
-```{r out.width = "50%"}
+```{r out.width = "50%", echo=FALSE}
 include_graphics("Instruction_images/table_gene.png")
 ```
 
