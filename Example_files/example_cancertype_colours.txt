@@ -1,0 +1,5 @@
+cancertype	cols
+Diagnosis_1	antiquewhite3
+Diagnosis_2	aquamarine4
+Diagnosis_3	black
+Diagnosis_4	blue2
