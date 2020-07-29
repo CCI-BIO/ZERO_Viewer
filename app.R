@@ -14,12 +14,20 @@ library(ggplot2)
 library(plotly)
 library(tidyr)
 library(RColorBrewer)
+library(knitr)
 
 # Increase max file size
 options(shiny.maxRequestSize = 500*1024^2)
 
 # File directory
 dirLoc <- getwd()
+
+##knit the instruction files
+knit("table_stats_help.Rmd", output = "table_stats_help.md")
+knit("exp-plot-help.Rmd", output = "exp-plot-help.md")
+knit("sig_plot_help.Rmd", output = "sig_plot_help.md")
+knit("tsne_plot_help.Rmd", output = "tsne_plot_help.md")
+
 
 # Define UI for application
 ui <- fluidPage(
@@ -31,6 +39,33 @@ ui <- fluidPage(
   navbarPage(
     id = "tabs", 
     title = "ZERO Viewer",
+    ##############################
+    # Intruction Manual - Pooja  #
+    ##############################
+    tabPanel(
+      "Help",
+      navbarPage(
+        id = "tabs1",
+        title = "Instruction Manual",
+        theme = "bootsrap.css",
+        tabPanel(
+          "Table Statistics",
+          includeMarkdown("table_stats_help.md")
+        ),
+        tabPanel(
+          "Expression Plot",
+          includeMarkdown("exp-plot-help.md")
+        ),
+        tabPanel(
+          "tSNE Plot",
+          includeMarkdown("tsne_plot_help.md")
+        ),
+        tabPanel(
+          "Signature Plot",
+          includeMarkdown("sig_plot_help.md")
+        )
+      )
+     ),
     ################################
     # DE and table view -- Nisitha #
     ################################
