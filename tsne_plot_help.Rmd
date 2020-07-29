@@ -35,7 +35,7 @@ include_graphics("Instruction_images/tsne_1.png")
 
 The second method is a custom user input with sample IDs and group names can be used (see custom group file example). Please note that the headers must be exactly as is shown in the example.
 
-```{r}
+```{r, echo=FALSE}
 example_custom_colors <- read.delim("Example_files/example_custom_groups_file.txt", header=T, sep="\t")
 example_custom_colors
 ```
