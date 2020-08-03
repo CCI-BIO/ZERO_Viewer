@@ -25,7 +25,7 @@
 
 ### Standalone version (windows only)
 
-A compiled standalone executable is available in the current release section of the git. The executable has been compiled with Inno Setup (v5.6.1(a)) via the RInno package. R version 4.0.2 is also included in the installation. 
+A compiled standalone executable is available in the current release section of the git. The executable has been compiled with Inno Setup (v5.6.1(a)) via the RInno package (https://github.com/ficonsulting/RInno). R version 4.0.2 is also included in the installation. 
 
 Run the executable and follow the prompts. The installation directory will be located in your user documents folder. Once installed, the first run of the application may take several minutes as the R packages are installed. A browser window will automatically open with the application GUI when ready. Succesive runs of the application will have a much quicker startup time as the R packages will already be installed. 
 
