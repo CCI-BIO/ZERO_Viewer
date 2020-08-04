@@ -3,7 +3,7 @@
 ##
 ## Created by Pooja Venkat
 ## Date: 16/07/2019
-## Last updated: 07/07/2020
+## Last updated: 04/08/2020
 
 observeEvent(c(input$Select_plotfile_dot),{ 
   tryCatch(
@@ -27,7 +27,9 @@ observeEvent(c(input$Select_plotfile_dot),{
         tpm_online<<-read.delim(paste(dirLoc, "GeneExpression_TPM_Counts.txt", sep = ""),sep="\t",header=T, stringsAsFactors = F)
         colnames(tpm_online)<<-gsub(pattern="\\.",replacement="-",colnames(tpm_online))
         cncInfo_online<<-read.delim(paste(dirLoc,"Patients_Diagnosis.txt",sep=""),sep="\t",header=F,row.names=1)
+        cncInfo_online<<-cncInfo_online[c(1,which(rownames(cncInfo_online) %in% colnames(tpm_online))),]
         cncInfo_1_online<<-read.delim(paste(dirLoc,"Patients_Diagnosis.txt",sep=""),sep="\t",header=T)
+        cncInfo_1_online<<-cncInfo_1_online[which(cncInfo_1_online$Patient.ID %in% colnames(tpm_online)),]
         
         # Check if file exists
         if(is.null(tpm_online) & is.null(cncInfo_1_online)){
@@ -111,7 +113,16 @@ observeEvent(c(input$Select_plotfile_dot, input$dotTPMCounts, input$dotPatientme
       # If error in read.table output NULL 
       return(NULL)
       })
-   }
+    }
+    ##Check if patients IDs correlate in both tpm and patient diagnosis file
+    if(!is.null(tpm_offline) & !is.null(cncInfo_offline) & !is.null(cncInfo_1_offline) ){
+      cncInfo_offline<<-cncInfo_offline[c(1,which(rownames(cncInfo_offline) %in% colnames(tpm_offline))),]
+      cncInfo_1_offline<<-cncInfo_1_offline[which(cncInfo_1_offline$Patient.ID %in% colnames(tpm_offline)),]
+      patient_id_offline <- cncInfo_1_offline$Patient.ID
+      
+      updateSelectizeInput(session = session,inputId = "selectPatient_dot_offline", choices = patient_id_offline,server=T )
+      
+    }
   }
 })
 
@@ -126,8 +137,10 @@ Expression_Dotplot <- function(id, geneList, tpm, cncInfo, cncInfo_1){
   typeCnc<-cncInfo[1,2:ncol(cncInfo)]
   grpall<-numeric(length(typeCnc))
   numPat<-typeCnc[patLocCnc]
+  ##Number of patients with the same cancer type
+  numCnc <- length(which(typeCnc %in% numPat))
   for(i in 1:length(typeCnc)){
-    if(i==patLocCnc){grpall[i]<-2}else if(typeCnc[i]==numPat){grpall[i]<-3}else{grpall[i]<-1}
+    if(i==patLocCnc){grpall[i]<-2}else if(typeCnc[i]==numPat & numCnc!=1){grpall[i]<-3}else{grpall[i]<-1}
   }
   groups<-character(length(grpall))
   i=1
@@ -147,12 +160,22 @@ Expression_Dotplot <- function(id, geneList, tpm, cncInfo, cncInfo_1){
     grpdat <- cbind(grpdat, cncInfo_1)
     maxVal<-max(geneInfo[1,])
     suppressWarnings({
-    pl<-ggplot(grpdat,aes(name,TPM))+
+      if(numCnc == 1){
+        ##if a single sample is present within a  cancer type
+        pl<-ggplot(grpdat,aes(name,TPM))+
+          geom_hline(aes(yintercept=median(grpdat$TPM)), size = 0.1)+
+          geom_dotplot(binaxis="y",stackdir="center",aes(fill=groups),binwidth=maxVal/60,dotsize=1.2, width = 0.8, alpha = 0.8)+
+          scale_fill_manual(name="",labels=c("Cohort",as.character(id)),values=c("black","red"))+
+          theme_classic()+theme(axis.text.x = element_text(size=25),axis.title.y=element_text(size=25))+
+          labs(y="TPM",x="")
+      }else{
+        pl<-ggplot(grpdat,aes(name,TPM))+
         geom_hline(aes(yintercept=median(grpdat$TPM)), size = 0.1)+
         geom_dotplot(binaxis="y",stackdir="center",aes(fill=groups),binwidth=maxVal/60,dotsize=1.2, width = 0.8, alpha = 0.8)+
         scale_fill_manual(name="",labels=c("Cohort",as.character(cncType),as.character(id)),values=c("black","green","red"))+
         theme_classic()+theme(axis.text.x = element_text(size=25),axis.title.y=element_text(size=25))+
         labs(y="TPM",x="")
+      }
     filename <- paste("Gene_", gene, "-rnaseq_personalised.png", sep = "")
     })
     

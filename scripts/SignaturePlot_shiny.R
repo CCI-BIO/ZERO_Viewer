@@ -3,7 +3,7 @@
 ##
 ## Created by Nisitha Jayatilleke
 ## Date: 23/07/2019
-## Last updated: 07/07/2020
+## Last updated: 04/08/2020
 
 # Initiliase widgets
 observeEvent(
@@ -100,10 +100,12 @@ observeEvent(
           # Create variable for signature plot patient metadata
           SigPlotPatientMetadata <<- reactive({
             check_tpm <- read.delim(paste(dirLoc, "GeneExpression_TPM_Counts.txt", sep = ""), sep = "\t", header = T, row.names = 1)
+            colnames(check_tpm) <- gsub(pattern="\\.",replacement="-",colnames(check_tpm))
             metadata <- read.delim(paste(dirLoc, "Patients_Diagnosis.txt", sep = ""), header = T, stringsAsFactors = F)
-            if(nrow(metadata) > (ncol(check_tpm)-1)){
-              metadata <- metadata[1:(ncol(check_tpm)-1),]
-            }
+            metadata <- metadata[which(metadata$Patient.ID %in% colnames(check_tpm)),]
+            # if(nrow(metadata) > (ncol(check_tpm)-1)){
+            #   metadata <- metadata[1:(ncol(check_tpm)-1),]
+            # }
             return(metadata)
           })
           # Create variable for signature plot patient tpm counts
@@ -163,10 +165,12 @@ observeEvent(
             # Create variable for signature plot patient metadata
             SigPlotPatientMetadata <<- reactive({
               check_tpm <- read.delim(inFile1$datapath, sep = "\t", header = T, row.names = 1)
+              colnames(check_tpm) <- gsub(pattern="\\.",replacement="-",colnames(check_tpm))
               metadata <- read.delim(inFile2$datapath, header = T, stringsAsFactors = F)
-              if(nrow(metadata) > (ncol(check_tpm)-1)){
-                metadata <- metadata[1:(ncol(check_tpm)-1),]
-              }
+              metadata <- metadata[which(metadata$Patient.ID %in% colnames(check_tpm)),]
+              # if(nrow(metadata) > (ncol(check_tpm)-1)){
+              #   metadata <- metadata[1:(ncol(check_tpm)-1),]
+              # }
               return(metadata)
             })
           },
