@@ -386,6 +386,55 @@ ui <- fluidPage(
           downloadButton("SigPlotDownload", label = "Download as .png")
         )
       )
+    ),
+    #############################
+    # Violin plot -- Nisitha    #
+    #############################
+    tabPanel(
+      "Violin Plot",
+      # Select mode for application
+      fluidRow(
+        column(
+          12,
+          radioButtons(
+            inputId = "VioPlotSelectOffline",
+            label = h4("Select mode:"),
+            choices = list("Online" = "online", "Offline" = "offline")
+          )
+        )
+      ),
+      # Select upload of TPM counts and Patient diagnosis files
+      fluidRow(
+        column(
+          4,
+          uiOutput("VioPlotTPMCounts")
+        ),
+        column(
+          4,
+          uiOutput("VioPlotPatientMetadata")
+        )
+      ),
+      # Select gene for plotting
+      fluidRow(
+        column(
+          6,
+          uiOutput("VioPlotGeneSelect")
+        )
+      ),
+      # Output signature plotly
+      fluidRow(
+        column(
+          12,
+          plotlyOutput("VioPlot", height = "800px", width = "1200px")
+        )
+      ),
+      # Download signature plot button
+      fluidRow(
+        column(
+          12,
+          downloadButton("VioPlotDownload", label = "Download as .png")
+        )
+      )
     )
   )
 )
@@ -406,6 +455,9 @@ server <- function(input, output, session) {
   
   # Import signautre script
   source("scripts/SignaturePlot_shiny.R", local = T)
+  
+  # Import violin plot script
+  source("scripts/violinPlot_shiny.R", local = T)
   
   # Stop application (required for RInno)
   if(!interactive()){
