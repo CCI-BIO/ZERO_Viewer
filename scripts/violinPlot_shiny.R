@@ -203,6 +203,7 @@ observeEvent(
               tpmSubset <- tpm[which(rownames(tpm) %in% geneToTest),,drop=F]
               tpmSubset <- tpmSubset[,-which(colnames(tpmSubset) %in% "transcript_id.s."),drop=F]
               metadata <- VioPlotPatientMetadata()
+              metadata[,1] <- gsub(pattern = "-", replacement = ".", metadata[,1])
               
               # Create data frame
               df <- matrix(nrow = ncol(tpmSubset), ncol = 3)
@@ -224,6 +225,7 @@ observeEvent(
                 # Create plot
                 p <- ggplot(data = df, mapping = aes(x = group, y = value, fill = group)) + 
                   geom_violin() +
+                  # geom_boxplot(inherit.aes = F, mapping = aes(x = group, y = value)) +
                   theme_classic() +
                   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust = 1), plot.title = element_text(hjust = 0.5)) +
                   xlab("") + ylab("TPM") + 
@@ -231,9 +233,11 @@ observeEvent(
               } else if(input$VioPlotSelectTPMScale2 == "logtpm"){
                 df$value[df$value == 0] <- 0.0001
                 df$value <- log(df$value)
+                
                 # Create plot
                 p <- ggplot(data = df, mapping = aes(x = group, y = value, fill = group)) + 
                   geom_violin() +
+                  # geom_boxplot(inherit.aes = F, mapping = aes(x = group, y = value)) +
                   theme_classic() +
                   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust = 1), plot.title = element_text(hjust = 0.5)) +
                   xlab("") + ylab("TPM") + 
@@ -250,7 +254,7 @@ observeEvent(
               shinyjs::enable("VioPlotDownload")
               
               # Create plotly version for display
-              ggplotly(print(p))
+              ggplotly(p)
               
             }
           },
