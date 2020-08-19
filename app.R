@@ -412,6 +412,10 @@ ui <- fluidPage(
         column(
           4,
           uiOutput("VioPlotPatientMetadata")
+        ),
+        column(
+          4,
+          uiOutput("VioPlotSelectTPMScale")
         )
       ),
       # Select gene for plotting

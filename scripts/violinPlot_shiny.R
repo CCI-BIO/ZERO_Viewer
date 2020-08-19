@@ -145,6 +145,7 @@ observeEvent(
   {
     shinyjs::hide("VioPlotGeneSelect")
     shinyjs::hide("VioPlotCategorySelect")
+    shinyjs::hide("VioPlotSelectTPMScale")
     tryCatch(
       expr = {
         if(!is.null(VioPlotTPM()) & !is.null(VioPlotPatientMetadata())){
@@ -168,8 +169,16 @@ observeEvent(
               # options = list(maxOptions = 30000)
             )
           })
+          output$VioPlotSelectTPMScale <- renderUI({
+            radioButtons(
+              inputId = "VioPlotSelectTPMScale2",
+              label = h4("Select TPM scaling:"), 
+              choices = list("TPM" = "tpm", "Log TPM" = "logtpm")
+            )
+          })
           shinyjs::show("VioPlotGeneSelect")
           shinyjs::show("VioPlotCategorySelect")
+          shinyjs::show("VioPlotSelectTPMScale")
         }
       },
       error = function(e){
@@ -181,7 +190,7 @@ observeEvent(
 
 # Plot trigger
 observeEvent(
-  c(input$VioPlotSelectOffline, input$VioPlotTPMCounts2, input$VioPlotPatientMetadata2, input$VioPlotGeneSelect2, input$VioPlotCategorySelect2),
+  c(input$VioPlotSelectOffline, input$VioPlotTPMCounts2, input$VioPlotPatientMetadata2, input$VioPlotGeneSelect2, input$VioPlotCategorySelect2, input$VioPlotSelectTPMScale2),
   {
     if(input$VioPlotSelectOffline == "offline"){
       # Construct violin plot with plotly
@@ -204,20 +213,32 @@ observeEvent(
               for(i in 1:ncol(tpmSubset)){
                 df[i,1] <- colnames(tpmSubset)[i]
                 df[i,2] <- tpmSubset[1,i]
-                df[i,3] <- metadata[which(metadata$Patient.ID == colnames(tpmSubset)[i]), column_idx]
+                df[i,3] <- metadata[which(metadata[,1] == colnames(tpmSubset)[i]), column_idx]
               }
               df <- as.data.frame(df)
               df$sample <- as.character(df$sample)
               df$value <- as.numeric(df$value)
               df$group <- as.character(df$group)
               
-              # Create plot
-              p <- ggplot(data = df, mapping = aes(x = group, y = value, fill = group)) + 
-                geom_violin() +
-                theme_classic() +
-                theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust = 1), plot.title = element_text(hjust = 0.5)) +
-                xlab("") + ylab("TPM") + 
-                ggtitle(paste("Gene expression for ", geneToTest, sep = ""))
+              if(input$VioPlotSelectTPMScale2 == "tpm"){
+                # Create plot
+                p <- ggplot(data = df, mapping = aes(x = group, y = value, fill = group)) + 
+                  geom_violin() +
+                  theme_classic() +
+                  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust = 1), plot.title = element_text(hjust = 0.5)) +
+                  xlab("") + ylab("TPM") + 
+                  ggtitle(paste("Gene expression for ", geneToTest, sep = ""))
+              } else if(input$VioPlotSelectTPMScale2 == "logtpm"){
+                df$value[df$value == 0] <- 0.0001
+                df$value <- log(df$value)
+                # Create plot
+                p <- ggplot(data = df, mapping = aes(x = group, y = value, fill = group)) + 
+                  geom_violin() +
+                  theme_classic() +
+                  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust = 1), plot.title = element_text(hjust = 0.5)) +
+                  xlab("") + ylab("TPM") + 
+                  ggtitle(paste("Gene expression for ", geneToTest, sep = ""))
+              }
               
               # Create download handler
               output$VioPlotDownload <- downloadHandler(
