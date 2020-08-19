@@ -417,8 +417,12 @@ ui <- fluidPage(
       # Select gene for plotting
       fluidRow(
         column(
-          6,
+          4,
           uiOutput("VioPlotGeneSelect")
+        ),
+        column(
+          4,
+          uiOutput("VioPlotCategorySelect")
         )
       ),
       # Output signature plotly
