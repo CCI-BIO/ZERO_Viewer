@@ -427,6 +427,10 @@ ui <- fluidPage(
         column(
           4,
           uiOutput("VioPlotCategorySelect")
+        ),
+        column(
+          4,
+          uiOutput("VioPlotSpecificCategorySelect")
         )
       ),
       # Output signature plotly

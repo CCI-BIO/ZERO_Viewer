@@ -188,9 +188,37 @@ observeEvent(
   }
 )
 
+# Populate specific category select
+observeEvent(
+  c(input$VioPlotCategorySelect2),
+  {
+    tryCatch(
+      expr = {
+        if(!is.null(VioPlotTPM()) & !is.null(VioPlotPatientMetadata())){
+          metadata <- VioPlotPatientMetadata()
+          columnToSelect <- input$VioPlotCategorySelect2
+          groups <- metadata[,columnToSelect]
+          output$VioPlotSpecificCategorySelect <- renderUI({
+            selectInput(
+              inputId = "VioPlotSpecificCategorySelect2",
+              label = h4("Select specific labels to plot:"), 
+              choices = groups, 
+              selected = groups, 
+              multiple = T 
+            )
+          })
+        }
+      },
+      error = function(e){
+        return(NULL)
+      }
+    )
+  }
+)
+
 # Plot trigger
 observeEvent(
-  c(input$VioPlotSelectOffline, input$VioPlotTPMCounts2, input$VioPlotPatientMetadata2, input$VioPlotGeneSelect2, input$VioPlotCategorySelect2, input$VioPlotSelectTPMScale2),
+  c(input$VioPlotSelectOffline, input$VioPlotTPMCounts2, input$VioPlotPatientMetadata2, input$VioPlotGeneSelect2, input$VioPlotCategorySelect2, input$VioPlotSelectTPMScale2, input$VioPlotSpecificCategorySelect2),
   {
     if(input$VioPlotSelectOffline == "offline"){
       # Construct violin plot with plotly
@@ -221,6 +249,8 @@ observeEvent(
               df$value <- as.numeric(df$value)
               df$group <- as.character(df$group)
               
+              df <- df[which(df$group %in% input$VioPlotSpecificCategorySelect2),]
+              
               if(input$VioPlotSelectTPMScale2 == "tpm"){
                 # Create plot
                 p <- ggplot(data = df, mapping = aes(x = group, y = value, fill = group)) + 
@@ -238,17 +268,17 @@ observeEvent(
                   geom_violin(alpha = 0.5) +
                   theme_classic() +
                   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust = 1), plot.title = element_text(hjust = 0.5)) +
-                  xlab("") + ylab("TPM") + 
+                  xlab("") + ylab("log TPM") + 
                   ggtitle(paste("Gene expression for ", geneToTest, sep = ""))
               }
               
               # Create download handler
               output$VioPlotDownload <- downloadHandler(
                 filename = function(){paste(geneToTest, "_violin_plot.png", sep = "")},
-                content = function(file){ggsave(filename = file,
+                content = function(file){ggsave(filename = file, 
                                                 plot = (p + theme(legend.position = "none") +
                                                           geom_boxplot(inherit.aes = F, mapping = aes(x = group, y = value), width = 0.1, fill = "gray62", outlier.alpha = 0.5) + 
-                                                          stat_boxplot(geom = "errorbar", width = 0.1)), device = "png", width = 8
+                                                          stat_boxplot(geom = "errorbar", width = 0.1)), device = "png", width = 20, height = 12, dpi = 150
                                                )
                                         }
               )
