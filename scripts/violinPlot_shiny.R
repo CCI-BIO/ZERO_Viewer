@@ -224,8 +224,7 @@ observeEvent(
               if(input$VioPlotSelectTPMScale2 == "tpm"){
                 # Create plot
                 p <- ggplot(data = df, mapping = aes(x = group, y = value, fill = group)) + 
-                  geom_violin() +
-                  # geom_boxplot(inherit.aes = F, mapping = aes(x = group, y = value)) +
+                  geom_violin(alpha = 0.5) +
                   theme_classic() +
                   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust = 1), plot.title = element_text(hjust = 0.5)) +
                   xlab("") + ylab("TPM") + 
@@ -236,8 +235,7 @@ observeEvent(
                 
                 # Create plot
                 p <- ggplot(data = df, mapping = aes(x = group, y = value, fill = group)) + 
-                  geom_violin() +
-                  # geom_boxplot(inherit.aes = F, mapping = aes(x = group, y = value)) +
+                  geom_violin(alpha = 0.5) +
                   theme_classic() +
                   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust = 1), plot.title = element_text(hjust = 0.5)) +
                   xlab("") + ylab("TPM") + 
@@ -247,7 +245,12 @@ observeEvent(
               # Create download handler
               output$VioPlotDownload <- downloadHandler(
                 filename = function(){paste(geneToTest, "_violin_plot.png", sep = "")},
-                content = function(file){ggsave(filename = file, plot = (p + theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust = 1))), device = "png", width = 8)}
+                content = function(file){ggsave(filename = file,
+                                                plot = (p + theme(legend.position = "none") +
+                                                          geom_boxplot(inherit.aes = F, mapping = aes(x = group, y = value), width = 0.1, fill = "gray62", outlier.alpha = 0.5) + 
+                                                          stat_boxplot(geom = "errorbar", width = 0.1)), device = "png", width = 8
+                                               )
+                                        }
               )
               
               # Enable download button
