@@ -61,6 +61,7 @@ observeEvent(
       tryCatch(
         expr = {
           # Create variable for violin plot patient metadata
+          shinyjs::disable("VioPlotSelectOffline")
           VioPlotPatientMetadata <<- reactive({
             check_tpm <- read.delim(paste(dirLoc, "GeneExpression_TPM_Counts.txt", sep = ""), sep = "\t", header = T, row.names = 1)
             colnames(check_tpm) <- gsub(pattern="\\.",replacement="-",colnames(check_tpm))
@@ -78,6 +79,7 @@ observeEvent(
           })
         },
         error = function(e){
+          shinyjs::enable("VioPlotSelectOffline")
           VioPlotPatientMetadata <<- reactive({return(NULL)})
           VioPlotTPM <<- reactive({return(NULL)})
           return(NULL)
@@ -180,8 +182,10 @@ observeEvent(
           shinyjs::show("VioPlotCategorySelect")
           shinyjs::show("VioPlotSelectTPMScale")
         }
+        shinyjs::enable("VioPlotSelectOffline")
       },
       error = function(e){
+        shinyjs::enable("VioPlotSelectOffline")
         return(NULL)
       }
     )

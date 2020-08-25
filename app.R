@@ -20,7 +20,7 @@ library(knitr)
 options(shiny.maxRequestSize = 500*1024^2)
 
 # File directory
-dirLoc <- getwd()
+dirLoc <- paste(getwd(), "/", sep = "")
 
 ##knit the instruction files
 knit("table_stats_help.Rmd", output = "table_stats_help.md")
@@ -28,13 +28,12 @@ knit("exp-plot-help.Rmd", output = "exp-plot-help.md")
 knit("sig_plot_help.Rmd", output = "sig_plot_help.md")
 knit("tsne_plot_help.Rmd", output = "tsne_plot_help.md")
 
-
 # Define UI for application
 ui <- fluidPage(
   # Set shiny theme
   theme = shinytheme("flatly"),
   # Initialise ShinyJS
-  useShinyjs(),
+  shinyjs::useShinyjs(),
   # Navbar initialisation
   navbarPage(
     id = "tabs", 
@@ -454,7 +453,10 @@ ui <- fluidPage(
 # Define server logic
 server <- function(input, output, session) {
   # Use shinyjs
-  useShinyjs()
+  shinyjs::useShinyjs()
+  
+  # Disable buttons at start
+  shinyjs::disable("VioPlotSelectOffline")
   
   # Import table view script
   source("scripts/tableView.R", local = T)
