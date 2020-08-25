@@ -20,7 +20,8 @@ library(knitr)
 options(shiny.maxRequestSize = 500*1024^2)
 
 # File directory
-dirLoc <- paste(getwd(), "/", sep = "")
+# dirLoc <- paste(getwd(), "/", sep = "")
+dirLoc <- "R:/KCA/Projects/ZEROApp/"
 
 ##knit the instruction files
 knit("table_stats_help.Rmd", output = "table_stats_help.md")
@@ -435,7 +436,7 @@ ui <- fluidPage(
       # Output signature plotly
       fluidRow(
         column(
-          12,
+           12,
           plotlyOutput("VioPlot", height = "800px", width = "1200px")
         )
       ),
@@ -456,6 +457,7 @@ server <- function(input, output, session) {
   shinyjs::useShinyjs()
   
   # Disable buttons at start
+  shinyjs::disable("SigPlotSelectOffline")
   shinyjs::disable("VioPlotSelectOffline")
   
   # Import table view script
