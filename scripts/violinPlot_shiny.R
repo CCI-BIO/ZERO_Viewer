@@ -263,10 +263,11 @@ observeEvent(
                   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust = 1), plot.title = element_text(hjust = 0.5)) +
                   xlab("") + ylab("TPM") + 
                   ggtitle(paste("Gene expression for ", geneToTest, sep = ""))
+                
                 p2 <- ggplot(data = df, mapping = aes(x = group, y = value, fill = group)) + 
                   geom_violin(alpha = 0.5) +
                   theme_classic() +
-                  theme(legend.position = "none", axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, size = 15)) +
+                  theme(legend.position = "none", axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, size = 15), axis.text.y = element_text(size = 15), axis.title = element_text(size = 15), plot.title = element_text(size = 17, hjust = 0.5)) +
                   geom_boxplot(inherit.aes = F, mapping = aes(x = group, y = value), width = 0.1, fill = "gray62", outlier.alpha = 0.5) + 
                   stat_boxplot(geom = "errorbar", width = 0.1) +
                   xlab("") + ylab("log TPM") + 
@@ -287,7 +288,7 @@ observeEvent(
                 p2 <- ggplot(data = df, mapping = aes(x = group, y = value, fill = group)) + 
                   geom_violin(alpha = 0.5) +
                   theme_classic() +
-                  theme(legend.position = "none", axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, size = 15)) +
+                  theme(legend.position = "none", axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, size = 15), axis.text.y = element_text(size = 15), axis.title = element_text(size = 15), plot.title = element_text(size = 17, hjust = 0.5)) +
                   geom_boxplot(inherit.aes = F, mapping = aes(x = group, y = value), width = 0.1, fill = "gray62", outlier.alpha = 0.5) + 
                   stat_boxplot(geom = "errorbar", width = 0.1) +
                   xlab("") + ylab("log TPM") + 
