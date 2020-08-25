@@ -220,7 +220,7 @@ observeEvent(
 observeEvent(
   c(input$VioPlotSelectOffline, input$VioPlotTPMCounts2, input$VioPlotPatientMetadata2, input$VioPlotGeneSelect2, input$VioPlotCategorySelect2, input$VioPlotSelectTPMScale2, input$VioPlotSpecificCategorySelect2),
   {
-    if(input$VioPlotSelectOffline == "offline"){
+    if(input$VioPlotSelectOffline == "offline" | input$VioPlotSelectOffline == "online"){
       # Construct violin plot with plotly
       output$VioPlot <- renderPlotly({
         tryCatch(
