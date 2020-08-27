@@ -65,7 +65,7 @@ observeEvent(
       output$SigPlotPatientMetadata <- renderUI({
         fileInput(
           inputId = "SigPlotPatientMetadata2",
-          label = h4("Upload patient diagnosis file:")
+          label = h4("Upload sample metadata file:")
         )
       })
       # Signature file for offline (turn on)
@@ -209,7 +209,6 @@ observeEvent(
     tryCatch(
       expr = {
         if(input$SigPlotSelectOffline == "online"){
-          print("working")
           # Select sample for plotting
           output$SigPlotSampleSelect <- renderUI({
             patientMetadata <- SigPlotPatientMetadata()
@@ -217,7 +216,7 @@ observeEvent(
             names(sampleSelectList) <- sampleSelectList
             selectizeInput(
               inputId = "SigPlotSampleSelect2",
-              label = h4("Select patient ID:"),
+              label = h4("Select sample ID:"),
               choices = sampleSelectList,
               multiple = F
             )
@@ -248,26 +247,26 @@ observeEvent(
                 colnames(patientTPM)[which(colnames(patientTPM) == "test_means")] <- "Mean"
                 colnames(patientTPM)[which(colnames(patientTPM) == "test_medians")] <- "Median"
                 colnames(patientTPM)[which(colnames(patientTPM) == "gene_id")] <- "Gene"
-                colnames(patientTPM)[which(colnames(patientTPM) == patientToTest)] <- "Patient.Value"
-                patientTPM <- cbind(patientTPM, Patient.ID = c(rep(patientToTest, nrow(patientTPM))))
+                colnames(patientTPM)[which(colnames(patientTPM) == patientToTest)] <- "Sample.Value"
+                patientTPM <- cbind(patientTPM, Sample.ID = c(rep(patientToTest, nrow(patientTPM))))
                 n <- nrow(patientTPM)
                 
                 # Reorder the genes based on patient TPM
-                gene_table <- patientTPM$Patient.Value
+                gene_table <- patientTPM$Sample.Value
                 names(gene_table) <- patientTPM$Gene
                 gene_levels <- names(gene_table)[order(gene_table, decreasing = T)]
                 Gene.Name <- names(gene_table)[order(gene_table, decreasing = T)]
-                Mean.Value <- patientTPM[order(patientTPM$Patient.Value, decreasing = T),]$Mean
-                Median.Value <- patientTPM[order(patientTPM$Patient.Value, decreasing = T),]$Median
+                Mean.Value <- patientTPM[order(patientTPM$Sample.Value, decreasing = T),]$Mean
+                Median.Value <- patientTPM[order(patientTPM$Sample.Value, decreasing = T),]$Median
                 patientTPM$Gene <- factor(patientTPM$Gene, levels = gene_levels)
                 
                 # Create plot
                 suppressWarnings(
-                  p <- ggplot(data = patientTPM, mapping = aes(x = Gene, y = Patient.Value)) + 
+                  p <- ggplot(data = patientTPM, mapping = aes(x = Gene, y = Sample.Value)) + 
                     scale_x_discrete() +
                     geom_segment(data = patientTPM, mapping = aes(x = as.numeric(0.5:(0.5+n-1)), xend = as.numeric(1.5:(1.5+n-1)), y = Mean.Value, yend = Mean.Value, value = Mean.Value, gene = Gene.Name, col = "Mean"), size = 1) +
                     geom_segment(data = patientTPM, mapping = aes(x = as.numeric(0.5:(0.5+n-1)), xend = as.numeric(1.5:(1.5+n-1)), y = Median.Value, yend = Median.Value, value = Median.Value, gene = Gene.Name, col = "Median"), size = 1) +
-                    geom_point(data = patientTPM, aes(col = "Patient TPM", patientID = Patient.ID, value = Patient.Value, gene = Gene), size = 1.5, show.legend = T) +
+                    geom_point(data = patientTPM, aes(col = "Sample TPM", sampleID = Sample.ID, value = Sample.Value, gene = Gene), size = 1.5, show.legend = T) +
                     scale_color_manual(name = "TPM Statistics", values = c("brown1", "cornflowerblue", "black")) +
                     ylab("log10(TPM)") +
                     theme(axis.text.x = element_text(angle = 90, hjust = 1))
@@ -283,10 +282,8 @@ observeEvent(
                 shinyjs::enable("SigPlotDownload")
                 shinyjs::enable("SigPlotSelectOffline")
                 
-                print("complete")
-                
                 # Create plotly version for display
-                ggplotly(p, tooltip = c("patientID", "value", "gene"))
+                ggplotly(p, tooltip = c("sampleID", "value", "gene"))
                 
               },
               error = function(e){
@@ -323,7 +320,7 @@ observeEvent(
             names(sampleSelectList) <- sampleSelectList
             selectizeInput(
               inputId = "SigPlotSampleSelect2",
-              label = h4("Select patient ID:"),
+              label = h4("Select sample ID:"),
               choices = sampleSelectList,
               multiple = F
             )
@@ -356,26 +353,26 @@ observeEvent(
                 colnames(patientTPM)[which(colnames(patientTPM) == "test_means")] <- "Mean"
                 colnames(patientTPM)[which(colnames(patientTPM) == "test_medians")] <- "Median"
                 colnames(patientTPM)[which(colnames(patientTPM) == "gene_id")] <- "Gene"
-                colnames(patientTPM)[which(colnames(patientTPM) == patientToTest)] <- "Patient.Value"
-                patientTPM <- cbind(patientTPM, Patient.ID = c(rep(patientToTest, nrow(patientTPM))))
+                colnames(patientTPM)[which(colnames(patientTPM) == patientToTest)] <- "Sample.Value"
+                patientTPM <- cbind(patientTPM, Sample.ID = c(rep(patientToTest, nrow(patientTPM))))
                 n <- nrow(patientTPM)
                 
                 # Reorder the genes based on patient TPM
-                gene_table <- patientTPM$Patient.Value
+                gene_table <- patientTPM$Sample.Value
                 names(gene_table) <- patientTPM$Gene
                 gene_levels <- names(gene_table)[order(gene_table, decreasing = T)]
                 Gene.Name <- names(gene_table)[order(gene_table, decreasing = T)]
-                Mean.Value <- patientTPM[order(patientTPM$Patient.Value, decreasing = T),]$Mean
-                Median.Value <- patientTPM[order(patientTPM$Patient.Value, decreasing = T),]$Median
+                Mean.Value <- patientTPM[order(patientTPM$Sample.Value, decreasing = T),]$Mean
+                Median.Value <- patientTPM[order(patientTPM$Sample.Value, decreasing = T),]$Median
                 patientTPM$Gene <- factor(patientTPM$Gene, levels = gene_levels)
                 
                 # Create plot
                 suppressWarnings(
-                  p <- ggplot(data = patientTPM, mapping = aes(x = Gene, y = Patient.Value)) + 
+                  p <- ggplot(data = patientTPM, mapping = aes(x = Gene, y = Sample.Value)) + 
                     scale_x_discrete() +
                     geom_segment(data = patientTPM, mapping = aes(x = as.numeric(0.5:(0.5+n-1)), xend = as.numeric(1.5:(1.5+n-1)), y = Mean.Value, yend = Mean.Value, value = Mean.Value, gene = Gene.Name, col = "Mean"), size = 1) +
                     geom_segment(data = patientTPM, mapping = aes(x = as.numeric(0.5:(0.5+n-1)), xend = as.numeric(1.5:(1.5+n-1)), y = Median.Value, yend = Median.Value, value = Median.Value, gene = Gene.Name, col = "Median"), size = 1) +
-                    geom_point(data = patientTPM, aes(col = "Patient TPM", patientID = Patient.ID, value = Patient.Value, gene = Gene), size = 1.5, show.legend = T) +
+                    geom_point(data = patientTPM, aes(col = "Sample TPM", sampleID = Sample.ID, value = Sample.Value, gene = Gene), size = 1.5, show.legend = T) +
                     scale_color_manual(name = "TPM Statistics", values = c("brown1", "cornflowerblue", "black")) +
                     ylab("log10(TPM)") +
                     theme(axis.text.x = element_text(angle = 90, hjust = 1))
@@ -391,7 +388,7 @@ observeEvent(
                 shinyjs::enable("SigPlotDownload")
                 
                 # Create plotly version for display
-                ggplotly(print(p), tooltip = c("patientID", "value", "gene"))
+                ggplotly(print(p), tooltip = c("sampleID", "value", "gene"))
                 
               },
               error = function(e){

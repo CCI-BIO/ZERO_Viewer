@@ -56,7 +56,7 @@ observeEvent(c(input$Select_plotfile_dot),{
         #check<<-0
         #UI for file inputs
         output$dotTPM_file <- renderUI({fileInput(inputId = "dotTPMCounts", label = h4("Upload TPM counts file:"))})
-        output$dotPatient_file <- renderUI({fileInput(inputId = "dotPatientmetadata", label = h4("Upload patient diagnosis file:"))})
+        output$dotPatient_file <- renderUI({fileInput(inputId = "dotPatientmetadata", label = h4("Upload sample metadata file:"))})
       }
     },
     error = function(e){

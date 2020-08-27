@@ -5,11 +5,61 @@
 ## Date: 18/07/2019
 ## Last updated: 04/08/2020
 
+# Initialise variable 
+tsne <<-  NULL
+
 # Initialise widgets
 observeEvent(
-  c(input$tSNEselectOffline, input$tSNEcolourSelect),
+  c(input$tSNEselectOffline),
   {
     shinyjs::disable("tSNEDownload")
+    
+    # Hide plot
+    shinyjs::hide("tSNEPlot")
+    
+    # Hide and reset widgets
+    shinyjs::hide("tSNEColourSelect")
+    shinyjs::hide("tSNEsampleSelect")
+    shinyjs::hide("tSNEperplexitySelect")
+    shinyjs::hide("tSNECategoryColourSelect")
+    shinyjs::hide("tSNEColourTable")
+    
+    output$tSNEColourSelect <- renderUI({
+      selectInput(
+        inputId = "tSNEColourSelect2", 
+        label = NULL,
+        choices = "NA"
+      )
+    })
+    output$tSNEsampleSelect <- renderUI({
+      selectInput(
+        inputId = "tSNEsampleSelect2", 
+        label = NULL,
+        choices = "NA"
+      )
+    })
+    output$tSNEperplexitySelect <- renderUI({
+      selectInput(
+        inputId = "tSNEperplexitySelect2", 
+        label = NULL,
+        choices = "NA"
+      )
+    })
+    output$tSNECategoryColourSelect <- renderUI({
+      selectInput(
+        inputId = "tSNECategoryColourSelect2", 
+        label = NULL,
+        choices = "NA"
+      )
+    })
+    output$tSNEColourTable <- renderUI({
+      selectInput(
+        inputId = "tSNEColourTable2", 
+        label = NULL,
+        choices = "NA"
+      )
+    })
+    
     # Online widgets
     if(input$tSNEselectOffline == "online"){
       shinyjs::show("tSNEbroadCategories")
@@ -27,27 +77,6 @@ observeEvent(
           choices = "NA"
         )
       })
-      
-      if(input$tSNEcolourSelect == "list"){
-        output$tSNEColourTable <- renderUI({
-          selectInput(
-            inputId = "tSNEColourTable2", 
-            label = NULL,
-            choices = "NA"
-          )
-        })
-        shinyjs::hide("tSNEColourTable")
-        shinyjs::show("tSNEbroadCategories")
-      } else if(input$tSNEcolourSelect == "user"){
-        shinyjs::hide("tSNEbroadCategories")
-        output$tSNEColourTable <- renderUI({
-          fileInput(
-            inputId = "tSNEColourTable2",
-            label = h4("Upload custom patient diagnosis file:")
-          )
-        })
-        shinyjs::show("tSNEColourTable")
-      }
       shinyjs::hide("tSNETPMCounts")
       shinyjs::hide("tSNEPatientMetadata")
     } else if(input$tSNEselectOffline == "offline"){
@@ -61,36 +90,18 @@ observeEvent(
       output$tSNEPatientMetadata <- renderUI({
         fileInput(
           inputId = "tSNEPatientMetadata2",
-          label = h4("Upload patient diagnosis file:")
+          label = h4("Upload sample metadata file:")
         )
       })
-      if(input$tSNEcolourSelect == "list"){
-        shinyjs::show("tSNEbroadCategories")
-        output$tSNEColourTable <- renderUI({
-          fileInput(
-            inputId = "tSNEColourTable2",
-            label = h4("Upload cancer type colours file:")
-          )
-        })
-      } else if(input$tSNEcolourSelect == "user"){
-        shinyjs::hide("tSNEbroadCategories")
-        output$tSNEColourTable <- renderUI({
-          fileInput(
-            inputId = "tSNEColourTable2",
-            label = h4("Upload custom patient diagnosis file:")
-          )
-        })
-      }
       shinyjs::show("tSNETPMCounts")
       shinyjs::show("tSNEPatientMetadata")
-      shinyjs::show("tSNEColourTable")
     }
   }
 )
 
 # Online mode
 observeEvent(
-  c(input$tSNEselectOffline, input$tSNEcolourSelect, input$tSNEColourTable2),
+  c(input$tSNEselectOffline),
   {
     if(input$tSNEselectOffline == "online"){
       tryCatch(
@@ -100,21 +111,7 @@ observeEvent(
             check_tpm <- read.delim(paste(dirLoc, "GeneExpression_TPM_Counts.txt", sep = ""), sep = "\t", header = T, row.names = 1)
             colnames(check_tpm) <- gsub(pattern="\\.",replacement="-",colnames(check_tpm))
             metadata <- read.delim(paste(dirLoc, "Patients_Diagnosis.txt", sep = ""), header = T, stringsAsFactors = F)
-            metadata <- metadata[which(metadata$Patient.ID %in% colnames(check_tpm)),]
-            # if(nrow(metadata) > (ncol(check_tpm)-1)){
-            #   metadata <- metadata[1:(ncol(check_tpm)-1),]
-            # }
-            return(metadata)
-          })
-          # Create variable for tSNE patient metadata (alternative format)
-          tSNEpatientMetadataAlt <<- reactive({
-            check_tpm <- read.delim(paste(dirLoc, "GeneExpression_TPM_Counts.txt", sep = ""), sep = "\t", header = T, row.names = 1)
-            colnames(check_tpm) <- gsub(pattern="\\.",replacement="-",colnames(check_tpm))
-            metadata <- read.delim(paste(dirLoc, "Patients_Diagnosis.txt", sep = ""), sep = "\t", header = F, row.names = 1)
-            metadata <- metadata[which(metadata$Patient.ID %in% colnames(check_tpm)),]
-            # if(nrow(metadata) > ncol(check_tpm)){
-            #   metadata <- metadata[1:(ncol(check_tpm)),]
-            # }
+            metadata <- metadata[which(metadata[,1] %in% colnames(check_tpm)),]
             return(metadata)
           })
           # Create variable for tSNE patient tpm counts
@@ -122,38 +119,10 @@ observeEvent(
             tpm <- read.delim(paste(dirLoc, "GeneExpression_TPM_Counts.txt", sep = ""), sep = "\t", header = T, row.names = 1)
             return(tpm)
           })
-          if(input$tSNEcolourSelect == "list"){
-            tSNEcolourTable <<- reactive({
-              colourTable <- read.delim("data_files/cancertype_colours.txt", header = T, stringsAsFactors = F)
-              return(colourTable)
-            })
-            shinyjs::show("tSNEbroadCategories")
-          } else if(input$tSNEcolourSelect == "user"){
-            shinyjs::hide("tSNEbroadCategories")
-            inFile3 <- input[["tSNEColourTable2"]]
-            if(is.null(inFile3)){
-              return(NULL)
-            } else {
-              tryCatch(
-                expr = {
-                  # Create variable for tSNE colour table
-                  tSNEcolourTable <<- reactive({
-                    colourTable <- read.delim(inFile3$datapath, header = T, stringsAsFactors = F)
-                    return(colourTable)
-                  })
-                },
-                error = function(e){
-                  tSNEcolourTable <<- reactive({return(NULL)})
-                }
-              )
-            }
-          }
         },
         error = function(e){
           tSNEpatientMetadata <<- reactive({return(NULL)})
-          tSNEpatientMetadataAlt <<- reactive({return(NULL)})
           tSNETPM <<- reactive({return(NULL)})
-          tSNEcolourTable <<- reactive({return(NULL)})
           return(NULL)
         }
       )
@@ -163,15 +132,14 @@ observeEvent(
 
 # Offline mode
 observeEvent(
-  c(input$tSNEselectOffline, input$tSNETPMCounts2, input$tSNEPatientMetadata2, input$tSNEcolourSelect, input$tSNEColourTable2),
+  c(input$tSNEselectOffline, input$tSNETPMCounts2, input$tSNEPatientMetadata2),
   {
     if(input$tSNEselectOffline == "offline"){
       tSNEpatientMetadata <<- reactive({return(NULL)})
-      tSNEpatientMetadataAlt <<- reactive({return(NULL)})
-      tSNEcolourTable <<- reactive({return(NULL)})
       tSNETPM <<- reactive({return(NULL)})
       inFile1 <- input[["tSNETPMCounts2"]]
-      if(is.null(inFile1)){
+      if(is.null(inFile1) || inFile1 == "NA"){
+        tSNETPM <<- reactive({return(NULL)})
         return(NULL)
       } else {
         tryCatch(
@@ -199,21 +167,7 @@ observeEvent(
               check_tpm <- read.delim(inFile1$datapath, sep = "\t", header = T, row.names = 1)
               colnames(check_tpm) <- gsub(pattern="\\.",replacement="-",colnames(check_tpm))
               metadata <- read.delim(inFile2$datapath, header = T, stringsAsFactors = F)
-              metadata <- metadata[which(metadata$Patient.ID %in% colnames(check_tpm)),]
-              # if(nrow(metadata) > (ncol(check_tpm)-1)){
-              #   metadata <- metadata[1:(ncol(check_tpm)-1),]
-              # }
-              return(metadata)
-            })
-            # Create variable for tSNE patient metadata (alternative format)
-            tSNEpatientMetadataAlt <<- reactive({
-              check_tpm <- read.delim(inFile1$datapath, sep = "\t", header = T, row.names = 1)
-              colnames(check_tpm) <- gsub(pattern="\\.",replacement="-",colnames(check_tpm))
-              metadata <- read.delim(inFile2$datapath, sep = "\t", header = F, row.names = 1)
-              metadata <- metadata[c(1,which(rownames(metadata) %in% colnames(check_tpm))),]
-              # if(nrow(metadata) > ncol(check_tpm)){
-              #   metadata <- metadata[1:(ncol(check_tpm)),]
-              # }
+              metadata <- metadata[which(metadata[,1] %in% colnames(check_tpm)),]
               return(metadata)
             })
           },
@@ -223,216 +177,96 @@ observeEvent(
           }
         )
       }
-      inFile3 <- input[["tSNEColourTable2"]]
-      if(is.null(inFile3)){
-        return(NULL)
-      } else {
-        tryCatch(
-          expr = {
-            # Create variable for tSNE colour table
-            tSNEcolourTable <<- reactive({
-              colourTable <- read.delim(inFile3$datapath, header = T, stringsAsFactors = F)
-              return(colourTable)
-            })
-          },
-          error = function(e){
-            tSNEcolourTable <<- reactive({return(NULL)})
-          }
-        )
-      }
     }
   }
 )
 
-# Plot online trigger
+# Populate colour selection variables 
 observeEvent(
-  c(input$tSNEselectOffline, input$tSNEcolourSelect, input$tSNEColourTable2, input$tSNEbroadCategories, input$tSNEperplexitySelect),
+  c(input$tSNEselectOffline, input$tSNETPMCounts2, input$tSNEPatientMetadata2),
   {
-    if(input$tSNEselectOffline == "online"){
-      # Select sample for plotting
-      output$tSNEsampleSelect <- renderUI({
-        patientMetadata <- tSNEpatientMetadata()
-        sampleSelectList <- patientMetadata$Patient.ID
-        names(sampleSelectList) <- sampleSelectList
-        selectizeInput(
-          inputId = "tSNEsampleSelect2",
-          label = h4("Select patient ID:"),
-          choices = c("None", sampleSelectList),
-          multiple = F,
-          selected = "None"
-        )
-      })
-
-      # Create TPM object
-      tSNETpmObject <- reactive({
-        tpm <- tSNETPM()
-        tpm <- tpm[,-1]
-        colnames(tpm) <- gsub(pattern = "\\.", replacement = "-", colnames(tpm))
-        expTpm <- t(tpm)
-        expTpm[expTpm == 0] <- 0.0001
-        logTPM <- log2(expTpm)
-        return(logTPM)
-      })
-
-      # Create tsne output
-      tSNEobject <- reactive({
-        perplexity <- input$tSNEperplexitySelect
-        logTPM <- tSNETpmObject()
-        set.seed(1234)
-        tsne <- Rtsne(logTPM, dims = 2, perplexity = perplexity, verbose = TRUE, max_iter = 500, check_duplicates = F)
-        return(tsne)
-      })
-      
-      if(input$tSNEcolourSelect == "list"){
-        # Construct tSNE plot with plotly
-        output$tSNEPlot <- renderPlotly({
-          id <- input$tSNEsampleSelect2
-          if(!is.null(id)){
-            if(input$tSNEbroadCategories == "specific"){
-              cncInfo <- tSNEpatientMetadataAlt()
-              cncInfo <- t(cncInfo)
-              
-              cncType <- cncInfo[1,-1]
-              cncType2 <- cncInfo[3,-1]
-              
-              logTPM <- tSNETpmObject()
-              
-              tsne <- tSNEobject()
-              tsne_points <- as.data.frame(tsne$Y)
-              tsne_points <- cbind(tsne_points, Diagnosis = as.vector(cncType), CancerCategory = as.vector(cncType2), SampleID = rownames(logTPM))
-              
-              colourTable <- tSNEcolourTable()
-              #colourTable <- colourTable[-c((nrow(colourTable)-3):nrow(colourTable)),]
-              colourTable <- colourTable[which(colourTable$cancertype %in% cncType),]
-              CancerColours <- colourTable$cols
-              names(CancerColours) <- unique(colourTable$cancertype)
-              
-              # Highlight patient id
-              suppressWarnings({
-                p <- ggplot(tsne_points, aes(x = V1, y = V2, SampleID = SampleID, CancerCategory = CancerCategory)) +
-                  geom_point(aes(colour = Diagnosis)) +
-                  scale_colour_manual(values = CancerColours) +
-                  labs(colour = "Cancer Type") +
-                  theme_classic()
-                filename <- "tsne.png"
-                if(id != "None"){
-                  p <- p + geom_point(data = tsne_points[tsne_points$SampleID == id,], size = 3, shape = 8)
-                  filename <- paste("tsne_", id, "_highlighted.png", sep = "")
-                }
-              })
-            } else if(input$tSNEbroadCategories == "broad"){
-              cncInfo <- tSNEpatientMetadataAlt()
-              cncInfo <- t(cncInfo)
-              
-              cncType <- cncInfo[1,-1]
-              cncType2 <- cncInfo[3,-1]
-              
-              logTPM <- tSNETpmObject()
-              
-              tsne <- tSNEobject()
-              tsne_points <- as.data.frame(tsne$Y)
-              tsne_points <- cbind(tsne_points, Diagnosis = as.vector(cncType), CancerCategory = as.vector(cncType2), SampleID = rownames(logTPM))
-              
-              colourTable <- tSNEcolourTable()
-              #colourTable <- colourTable[c((nrow(colourTable)-3):nrow(colourTable)),]
-              colourTable <- colourTable[which(colourTable$cancertype %in% cncType),]
-              CancerColours <- colourTable$cols
-              names(CancerColours) <- unique(colourTable$cancertype)
-              
-              # Highlight patient id
-              suppressWarnings({
-                p <- ggplot(tsne_points, aes(x = V1, y = V2, SampleID = SampleID, Diagnosis = Diagnosis)) +
-                  geom_point(aes(colour = CancerCategory)) +
-                  scale_colour_manual(values = CancerColours) +
-                  labs(colour = "Cancer Type") +
-                  theme_classic()
-                filename <- "tsne.png"
-                if(id != "None"){
-                  p <- p + geom_point(data = tsne_points[tsne_points$SampleID == id,], size = 3, shape = 8)
-                  filename <- paste("tsne_", id, "_highlighted.png", sep = "")
-                }
-              })
-            }
-            
-            # Create download handler
-            output$tSNEDownload <- downloadHandler(
-              filename = function(){filename},
-              content = function(file){ggsave(filename = file, plot = p, device = "png", width = 8)}
-            )
-            # Enable download button
-            shinyjs::enable("tSNEDownload")
-            
-            # Plotly output
-            ggplotly(
-              print(p),
-              tooltip = c("Diagnosis", "CancerCategory", "SampleID")
-            )
-          }
-        })
-      } else if(input$tSNEcolourSelect == "user"){
-        inFile3 <- input[["tSNEColourTable2"]]
-        if(is.null(inFile3)){
-          return(NULL)
-        } else {
-          # Construct tSNE plot with plotly
-          output$tSNEPlot <- renderPlotly({
-            id <- input$tSNEsampleSelect2
-            if(!is.null(id)){
-              cncInfo <- tSNEpatientMetadataAlt()
-              cncInfo <- t(cncInfo)
-              cncType <- cncInfo[1,-1]
-              cncType2 <- cncInfo[3,-1]
-              logTPM <- tSNETpmObject()
-              colourTable <- tSNEcolourTable()
-              samplesToColour <- colourTable$Patient
-              uniqueColours <- unique(colourTable$Group)
-              numCols <- length(uniqueColours)
-              cols <- brewer.pal(n = 9, name = "Set1")
-              cols <- cols[1:numCols]
-              cols <- c(cols, "#a9a9a9")
-              names(cols) <- c(uniqueColours, "Other")
-              sampleList <- rownames(logTPM)
-              for(i in 1:length(sampleList)){
-                if(sampleList[i] %in% samplesToColour){
-                  sampleList[i] <- colourTable[which(colourTable$Patient == sampleList[i]),"Group"]
-                } else {
-                  sampleList[i] <- "Other"
-                }
-              }
-              names(sampleList) <- rownames(logTPM)
-              tsne <- tSNEobject()
-              tsne_points <- as.data.frame(tsne$Y)
-              tsne_points <- cbind(tsne_points, Diagnosis = as.vector(cncType), CancerCategory = as.vector(cncType2), SampleID = rownames(logTPM), Group = sampleList)
-              
-              # Highlight patient id
-              suppressWarnings({
-                p <- ggplot(tsne_points, aes(x = V1, y = V2, SampleID = SampleID, Diagnosis = Diagnosis, CancerCategory = CancerCategory)) +
-                  geom_point(data = subset(tsne_points, Group == 'Other'), aes(colour = Group)) +
-                  geom_point(aes(colour = Group)) +
-                  scale_colour_manual(values = cols) +
-                  labs(colour = "Cancer Type") +
-                  theme_classic()
-                filename <- "tsne.png"
-                if(id != "None"){
-                  p <- p + geom_point(data = tsne_points[tsne_points$SampleID == id,], size = 3, shape = 8)
-                  filename <- paste("tsne_", id, "_highlighted.png", sep = "")
-                }
-              })
-              
-              # Create download handler
-              output$tSNEDownload <- downloadHandler(
-                filename = function(){filename},
-                content = function(file){ggsave(filename = file, plot = p, device = "png", width = 8)}
+    # tryCatch(
+    #   expr = {
+        if(!is.null(tSNETPM()) & !is.null(tSNEpatientMetadata())){
+          shinyjs::show("tSNEColourSelect")
+          shinyjs::show("tSNEsampleSelect")
+          shinyjs::show("tSNEperplexitySelect")
+          output$tSNEColourSelect <- renderUI({
+            radioButtons(
+              inputId = "tSNEColourSelect2",
+              label = h4("Select colouring method:"),
+              choices = list(
+                "Colour by metadata categories" = "list",
+                "Custom colouring" = "user"
               )
-              # Enable download button
-              shinyjs::enable("tSNEDownload")
-              
-              # Plotly output
-              ggplotly(
-                print(p),
-                tooltip = c("Diagnosis", "CancerCategory", "SampleID")
-              )
-            }
+            )
+          })
+          sampleMetadata <- tSNEpatientMetadata()
+          # sampleMetadata[,1] <- gsub(pattern = "-", replacement = ".", x = sampleMetadata[,1])
+          output$tSNEsampleSelect <- renderUI({
+            sampleSelectList <- sampleMetadata[,1]
+            names(sampleSelectList) <- sampleSelectList
+            selectizeInput(
+              inputId = "tSNEsampleSelect2",
+              label = h4("Select sample ID to highlight:"),
+              choices = c("None", sampleSelectList),
+              multiple = F,
+              selected = "None"
+            )
+          })
+          output$tSNEperplexitySelect <- renderUI({
+            numericInput(
+              inputId = "tSNEperplexitySelect2", 
+              label = h4("Select perplexity for tSNE:"), 
+              value = 20, 
+              min = 1, 
+              step = 1
+            )
+          })
+        }
+    #   },
+    #   error = function(e){
+    #     return(NULL)
+    #   }
+    # )
+  }
+)
+
+observeEvent(
+  c(input$tSNEselectOffline, input$tSNEColourSelect2),
+  {
+    shinyjs::hide("tSNECategoryColourSelect")
+    shinyjs::hide("tSNEColourTable")
+    if(!is.null(input$tSNEColourSelect2)){
+      if(input$tSNEColourSelect2 != "NA"){
+        if(input$tSNEColourSelect2 == "list"){
+          output$tSNECategoryColourSelect <- renderUI({
+            selectInput(
+              inputId = "tSNECategoryColourSelect2",
+              label = h4("Select colouring catergory:"),
+              choices = NULL, 
+              multiple = F
+            )
+          })
+          shinyjs::show("tSNECategoryColourSelect")
+          shinyjs::hide("tSNEColourTable")
+          sampleMetadata <- tSNEpatientMetadata()
+          output$tSNECategoryColourSelect <- renderUI({
+            selectInput(
+              inputId = "tSNECategoryColourSelect2",
+              label = h4("Select colouring catergory:"),
+              choices = colnames(sampleMetadata)[-1], 
+              multiple = F
+            )
+          })
+        } else if(input$tSNEColourSelect2 == "user"){
+          shinyjs::hide("tSNECategoryColourSelect")
+          shinyjs::show("tSNEColourTable")
+          output$tSNEColourTable <- renderUI({
+            fileInput(
+              inputId = "tSNEColourTable2",
+              label = h4("Upload custom sample metadata file:")
+            )
           })
         }
       }
@@ -440,180 +274,190 @@ observeEvent(
   }
 )
 
-# Plot offline trigger
+# Create log table for rtsne 
 observeEvent(
-  c(input$tSNEselectOffline, input$tSNETPMCounts2, input$tSNEPatientMetadata2, input$tSNEcolourSelect, input$tSNEColourTable2, input$tSNEbroadCategories, input$tSNEperplexitySelect),
+  c(input$tSNEselectOffline, input$tSNETPMCounts2, input$tSNEPatientMetadata2),
   {
-    if(input$tSNEselectOffline == "offline"){
-      # Select sample for plotting
-      output$tSNEsampleSelect <- renderUI({
-        patientMetadata <- tSNEpatientMetadata()
-        sampleSelectList <- patientMetadata$Patient.ID
-        names(sampleSelectList) <- sampleSelectList
-        selectizeInput(
-          inputId = "tSNEsampleSelect2",
-          label = h4("Select patient ID:"),
-          choices = c("None", sampleSelectList),
-          multiple = F,
-          selected = "None"
+    tryCatch(
+      expr = {
+        if(!is.null(tSNETPM()) & !is.null(tSNEpatientMetadata())){
+          # Create TPM object
+          tSNETpmObject <<- reactive({
+            tpm <- tSNETPM()
+            tpm <- tpm[,-1]
+            colnames(tpm) <- gsub(pattern = "\\.", replacement = "-", colnames(tpm))
+            expTpm <- t(tpm)
+            expTpm[expTpm == 0] <- 0.0001
+            logTPM <- log2(expTpm)
+            return(logTPM)
+          })
+        }
+      },
+      error = function(e){
+        tSNETpmObject <<- reactive({return(NULL)})
+        return(NULL)
+      }
+    )
+  }
+)
+
+observeEvent(
+  c(input$tSNEperplexitySelect2),
+  {
+    if(!is.null(tSNETPM()) & !is.null(tSNEpatientMetadata()) & !is.null(input$tSNEperplexitySelect2)){
+      tsne <<- NULL
+      if(!is.null(tSNETpmObject())){
+        tryCatch(
+          expr = {
+            # Create tsne output
+            perplexity <- input$tSNEperplexitySelect2
+            logTPM <- tSNETpmObject()
+            set.seed(1234)
+            tsne <<- Rtsne(logTPM, dims = 2, perplexity = perplexity, verbose = TRUE, max_iter = 500, check_duplicates = F)
+          },
+          error = function(e){
+            ####### ADD ERROR MESSAGE FOR LOW PERPLEXITY HERE #######
+            return(NULL)
+          }
         )
-      })
+      }
+    }
+  }
+)
 
-      # Create TPM object
-      tSNETpmObject <- reactive({
-        tpm <- tSNETPM()
-        tpm <- tpm[,-1]
-        colnames(tpm) <- gsub(pattern = "\\.", replacement = "-", colnames(tpm))
-        expTpm <- t(tpm)
-        expTpm[expTpm == 0] <- 0.0001
-        logTPM <- log2(expTpm)
-        return(logTPM)
-      })
-
-      # Create tsne output
-      tSNEobject <- reactive({
-        perplexity <- input$tSNEperplexitySelect
-        logTPM <- tSNETpmObject()
-        set.seed(1234)
-        tsne <- Rtsne(logTPM, dims = 2, perplexity = perplexity, verbose = TRUE, max_iter = 500, check_duplicates = F)
-        return(tsne)
-      })
-
-      if(input$tSNEcolourSelect == "list"){
-        # Construct tSNE plot with plotly
-        output$tSNEPlot <- renderPlotly({
-          id <- input$tSNEsampleSelect2
-          if(!is.null(id)){
-            if(input$tSNEbroadCategories == "specific"){
-              cncInfo <- tSNEpatientMetadataAlt()
-              cncInfo <- t(cncInfo)
-              
-              cncType <- cncInfo[1,-1]
-              cncType2 <- cncInfo[3,-1]
-              
-              logTPM <- tSNETpmObject()
-              
-              tsne <- tSNEobject()
-              tsne_points <- as.data.frame(tsne$Y)
-              tsne_points <- cbind(tsne_points, Diagnosis = as.vector(cncType), CancerCategory = as.vector(cncType2), SampleID = rownames(logTPM))
-              
-              colourTable <- tSNEcolourTable()
-              #colourTable <- colourTable[-c((nrow(colourTable)-3):nrow(colourTable)),]
-              colourTable <- colourTable[which(colourTable$cancertype %in% cncType),]
-              CancerColours <- colourTable$cols
-              names(CancerColours) <- unique(colourTable$cancertype)
-              
-              # Highlight patient id
-              suppressWarnings({
-                p <- ggplot(tsne_points, aes(x = V1, y = V2, SampleID = SampleID, CancerCategory = CancerCategory)) +
-                  geom_point(aes(colour = Diagnosis)) +
-                  scale_colour_manual(values = CancerColours) +
-                  labs(colour = "Cancer Type") +
-                  theme_classic()
-                filename <- "tsne.png"
-                if(id != "None"){
-                  p <- p + geom_point(data = tsne_points[tsne_points$SampleID == id,], size = 3, shape = 8)
-                  filename <- paste("tsne_", id, "_highlighted.png", sep = "")
-                }
-              })
-            } else if(input$tSNEbroadCategories == "broad"){
-              cncInfo <- tSNEpatientMetadataAlt()
-              cncInfo <- t(cncInfo)
-              
-              cncType <- cncInfo[1,-1]
-              cncType2 <- cncInfo[3,-1]
-              
-              logTPM <- tSNETpmObject()
-              
-              tsne <- tSNEobject()
-              tsne_points <- as.data.frame(tsne$Y)
-              tsne_points <- cbind(tsne_points, Diagnosis = as.vector(cncType), CancerCategory = as.vector(cncType2), SampleID = rownames(logTPM))
-              
-              colourTable <- tSNEcolourTable()
-              #colourTable <- colourTable[c((nrow(colourTable)-3):nrow(colourTable)),]
-              colourTable <- colourTable[which(colourTable$cancertype %in% cncType2),]
-              CancerColours <- colourTable$cols
-              names(CancerColours) <- unique(colourTable$cancertype)
-              
-              # Highlight patient id
-              suppressWarnings({
-                p <- ggplot(tsne_points, aes(x = V1, y = V2, SampleID = SampleID, Diagnosis = Diagnosis)) +
-                  geom_point(aes(colour = CancerCategory)) +
-                  scale_colour_manual(values = CancerColours) +
-                  labs(colour = "Cancer Type") +
-                  theme_classic()
-                filename <- "tsne.png"
-                if(id != "None"){
-                  p <- p + geom_point(data = tsne_points[tsne_points$SampleID == id,], size = 3, shape = 8)
-                  filename <- paste("tsne_", id, "_highlighted.png", sep = "")
-                }
-              })
+# Plot trigger
+observeEvent(
+  c(input$tSNEselectOffline, input$tSNEColourSelect2, input$tSNECategoryColourSelect2, input$tSNEperplexitySelect2, input$tSNEsampleSelect2, input$tSNEColourTable2),
+  {
+    if(!is.null(tSNETPM()) & !is.null(tSNEpatientMetadata()) & !is.null(input$tSNEperplexitySelect2) & !is.null(tsne) & !is.null(input$tSNECategoryColourSelect2)){
+      if(input$tSNEColourSelect2 == "list"){
+        if(input$tSNECategoryColourSelect2 != "NA"){
+          if(input$tSNECategoryColourSelect2 != ""){
+            sampleMetadata <- tSNEpatientMetadata()
+            categoryToColour <- input$tSNECategoryColourSelect2
+            groupList <- sampleMetadata[,categoryToColour]
+            
+            if(input$tSNEselectOffline == "online"){
+              colourTable <- read.delim(paste(dirLoc, "cancertype_colours.txt", sep = ""), header = T, stringsAsFactors = F)
+              colourTable <- colourTable[which(colourTable[,1] %in% unique(groupList)),]
+              colourVector <- colourTable[,2]
+              names(colourVector) <- colourTable[,1]
+            } else if(input$tSNEselectOffline == "offline"){
+              numColours <- length(unique(groupList))
+              colourTable <- matrix(ncol = 2, nrow = numColours)
+              colourTable[,1] <- unique(groupList)
+              getPalette <- colorRampPalette(brewer.pal(n = 9, name = "Set1"))
+              colourTable[,2] <- getPalette(numColours)
+              colourTable <- as.data.frame(colourTable)
+              colourVector <- colourTable[,2]
+              names(colourVector) <- colourTable[,1]
             }
             
-            # Create download handler
-            output$tSNEDownload <- downloadHandler(
-              filename = function(){filename},
-              content = function(file){ggsave(filename = file, plot = p, device = "png", width = 8)}
-            )
-            # Enable download button
-            shinyjs::enable("tSNEDownload")
+            tsne_points <<- as.data.frame(tsne$Y)
             
-            # Plotly output
-            ggplotly(
-              print(p),
-              tooltip = c("Diagnosis", "CancerCategory", "SampleID")
+            logTable <- tSNETpmObject()
+            
+            tryCatch(
+              expr = {
+                tsne_points <<- cbind(tsne_points, SampleID = rownames(logTable))
+                m <- match(sampleMetadata[,1], tsne_points$SampleID)
+                tsne_points <<- cbind(tsne_points, sampleMetadata[m,-1])
+                
+                # Create ggplot string
+                stringToParse <- "ggplot(tsne_points, aes(x = V1, y = V2, SampleID = SampleID"
+                for(i in 1:ncol(sampleMetadata[m,-1])){
+                  stringToParse <- paste(stringToParse, ", ", colnames(sampleMetadata[m,-1])[i], " = ", colnames(sampleMetadata[m,-1])[i], sep = "")
+                }
+                stringToParse <- paste(stringToParse, ")) + geom_point(aes(colour = ", categoryToColour, ")) + scale_colour_manual(values = colourVector) + labs(colour = 'Cancer Type') + theme_classic()", sep = "")
+                
+                p <- eval(parse(text = stringToParse))
+                
+                filename <- "tsne.png"
+                
+                id <- input$tSNEsampleSelect2
+                if(id != "None"){
+                  p <- p + geom_point(data = tsne_points[tsne_points$SampleID == id,], size = 3, shape = 8)
+                  filename <- paste("tsne_", id, "_highlighted.png", sep = "")
+                }
+                
+                # Create download handler
+                output$tSNEDownload <- downloadHandler(
+                  filename = function(){filename},
+                  content = function(file){ggsave(filename = file, plot = p, device = "png", width = 8)}
+                )
+                # Enable download button
+                shinyjs::enable("tSNEDownload")
+                
+                # Plotly output
+                output$tSNEPlot <- renderPlotly({
+                  ggplotly(p)
+                })
+                shinyjs::show("tSNEPlot")
+              },
+              error = function(e){
+                return(NULL)
+              }
             )
           }
-        })
-      } else if(input$tSNEcolourSelect == "user"){
+        }
+      } else if(input$tSNEColourSelect2 == "user"){
+
         inFile3 <- input[["tSNEColourTable2"]]
         if(is.null(inFile3)){
           return(NULL)
         } else {
-          # Construct tSNE plot with plotly
-          output$tSNEPlot <- renderPlotly({
-            id <- input$tSNEsampleSelect2
-            if(!is.null(id)){
-              cncInfo <- tSNEpatientMetadataAlt()
-              cncInfo <- t(cncInfo)
-              cncType <- cncInfo[1,-1]
-              cncType2 <- cncInfo[3,-1]
-              logTPM <- tSNETpmObject()
-              colourTable <- tSNEcolourTable()
-              samplesToColour <- colourTable$Patient
-              uniqueColours <- unique(colourTable$Group)
-              numCols <- length(uniqueColours)
-              cols <- brewer.pal(n = 9, name = "Set1")
-              cols <- cols[1:numCols]
-              cols <- c(cols, "#a9a9a9")
-              names(cols) <- c(uniqueColours, "Other")
-              sampleList <- rownames(logTPM)
-              for(i in 1:length(sampleList)){
-                if(sampleList[i] %in% samplesToColour){
-                  sampleList[i] <- colourTable[which(colourTable$Patient == sampleList[i]),"Group"]
-                } else {
-                  sampleList[i] <- "Other"
-                }
-              }
-              names(sampleList) <- rownames(logTPM)
-              tsne <- tSNEobject()
-              tsne_points <- as.data.frame(tsne$Y)
-              tsne_points <- cbind(tsne_points, Diagnosis = as.vector(cncType), CancerCategory = as.vector(cncType2), SampleID = rownames(logTPM), Group = sampleList)
+          tryCatch(
+            expr = {
+              # Create variable for tSNE colour table
+              tSNEcolourTable <<- read.delim(inFile3$datapath, header = T, stringsAsFactors = F)
+            },
+            error = function(e){
+              tSNEcolourTable <<- NULL
+            }
+          )
+        }
+        if(!is.null(tSNEcolourTable)){
+          tryCatch(
+            expr = {
+              sampleMetadata <- tSNEpatientMetadata()
               
-              # Highlight patient id
-              suppressWarnings({
-                p <- ggplot(tsne_points, aes(x = V1, y = V2, SampleID = SampleID, Diagnosis = Diagnosis, CancerCategory = CancerCategory)) +
-                  geom_point(data = subset(tsne_points, Group == 'Other'), aes(colour = Group)) +
-                  geom_point(aes(colour = Group)) +
-                  scale_colour_manual(values = cols) +
-                  labs(colour = "Cancer Type") +
-                  theme_classic()
-                filename <- "tsne.png"
-                if(id != "None"){
-                  p <- p + geom_point(data = tsne_points[tsne_points$SampleID == id,], size = 3, shape = 8)
-                  filename <- paste("tsne_", id, "_highlighted.png", sep = "")
-                }
-              })
+              colourTable <- tSNEcolourTable
+              numColours <- length(unique(colourTable[,2]))
+              getPalette <- colorRampPalette(brewer.pal(n = 9, name = "Paired"))
+              colourVector <- getPalette(numColours)
+              colourVector <- c(colourVector, "#a9a9a9")
+              names(colourVector) <- c(unique(colourTable[,2]), "Other")
+              
+              print(colourVector)
+              
+              tsne_points <<- as.data.frame(tsne$Y)
+              
+              logTable <- tSNETpmObject()
+              
+              tsne_points <<- cbind(tsne_points, SampleID = rownames(logTable))
+              m <- match(sampleMetadata[,1], tsne_points$SampleID)
+              tsne_points <<- cbind(tsne_points, sampleMetadata[m,-1])
+              
+              tsne_points$Groupings <<- c(rep("Other", nrow(tsne_points))) 
+              m1 <- match(colourTable[,1], tsne_points$SampleID)
+              tsne_points$Groupings[m1] <<- colourTable[,2]
+              
+              # Create ggplot string
+              stringToParse <- "ggplot(tsne_points, aes(x = V1, y = V2, SampleID = SampleID"
+              for(i in 1:ncol(sampleMetadata[m,-1])){
+                stringToParse <- paste(stringToParse, ", ", colnames(sampleMetadata[m,-1])[i], " = ", colnames(sampleMetadata[m,-1])[i], sep = "")
+              }
+              stringToParse <- paste(stringToParse, ")) + geom_point(aes(colour = Groupings)) + scale_colour_manual(values = colourVector) + labs(colour = 'Cancer Type') + theme_classic()", sep = "")
+              
+              p <- eval(parse(text = stringToParse))
+              
+              filename <- "tsne.png"
+              
+              id <- input$tSNEsampleSelect2
+              if(id != "None"){
+                p <- p + geom_point(data = tsne_points[tsne_points$SampleID == id,], size = 3, shape = 8)
+                filename <- paste("tsne_", id, "_highlighted.png", sep = "")
+              }
               
               # Create download handler
               output$tSNEDownload <- downloadHandler(
@@ -624,12 +468,15 @@ observeEvent(
               shinyjs::enable("tSNEDownload")
               
               # Plotly output
-              ggplotly(
-                print(p),
-                tooltip = c("Diagnosis", "CancerCategory", "SampleID")
-              )
+              output$tSNEPlot <- renderPlotly({
+                ggplotly(p)
+              })
+              shinyjs::show("tSNEPlot")
+            },
+            error = function(e){
+              return(NULL)
             }
-          })
+          )
         }
       }
     }

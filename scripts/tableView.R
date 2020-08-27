@@ -14,11 +14,12 @@ observe({
       tryCatch(
         expr = {
           patientMetadata <- read.delim(paste(dirLoc, "Patients_Diagnosis.txt", sep = ""), header = T, stringsAsFactors = F)
-          sampleSelectList <- patientMetadata$Patient.ID
+          print(patientMetadata)
+          sampleSelectList <- patientMetadata[,1]
           names(sampleSelectList) <- sampleSelectList
           selectizeInput(
             inputId = "sampleSelect2",
-            label = h4("Select patient ID:"),
+            label = h4("Select sample ID:"),
             choices = sampleSelectList,
             multiple = F,
             selected = NULL
@@ -73,7 +74,7 @@ observe({
     output$patientMetadata <- renderUI({
       fileInput(
         inputId = "patientMetadata2",
-        label = h4("Upload patient diagnosis file:")
+        label = h4("Upload sample metadata file:")
       )
     })
     # Select TPM data table
@@ -247,7 +248,7 @@ output$tablePreview <- renderDT(
           selectHist <- input$histologySelect
           for(i in 1:length(selectHist)){
             histToCalc <- selectHist[i]
-            patientMetadataSubset <- patientMetadata$Patient.ID[which(patientMetadata$Diagnosis %in% histToCalc)]
+            patientMetadataSubset <- patientMetadata[which(patientMetadata$Diagnosis %in% histToCalc),1]
             TPMcountssubset <- TPMcounts[, which(colnames(TPMcounts) %in% patientMetadataSubset),drop=F]
             TPMmean <- rowMeans(TPMcountssubset)
             TPMmedian <- apply(TPMcountssubset, 1, function(x) median(x))
