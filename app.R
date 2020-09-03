@@ -67,7 +67,7 @@ ui <- fluidPage(
       )
      ),
     ################################
-    # DE and table view -- Nisitha #
+    # Table viewer -- Nisitha #
     ################################
     tabPanel(
       "Table Statistics",
@@ -193,7 +193,7 @@ ui <- fluidPage(
           6,
           selectizeInput(
             inputId = "selectPatient_dot", 
-            label = h4("Select Patient ID:"), 
+            label = h4("Select Sample ID:"), 
             choices = NULL, 
             multiple = F
           )
@@ -213,7 +213,7 @@ ui <- fluidPage(
           6,
           selectizeInput(
             inputId = "selectPatient_dot_offline", 
-            label = h4("Select Patient ID:"), 
+            label = h4("Select Sample ID:"), 
             choices = NULL, 
             multiple = F
           )
@@ -444,16 +444,16 @@ server <- function(input, output, session) {
   source("scripts/tableView.R", local = T)
   
   # Import expression plot script
-  # source("scripts/ExpressionPlot_shiny.R", local = T)
+  source("scripts/ExpressionPlot_shiny.R", local = T)
   
   # Import tSNE plot script
-  # source("scripts/tSNEPlot_shiny.R", local = T)
+  source("scripts/tSNEPlot_shiny.R", local = T)
   
   # Import signautre script
-  # source("scripts/SignaturePlot_shiny.R", local = T)
+  source("scripts/SignaturePlot_shiny.R", local = T)
   
   # Import violin plot script
-  # source("scripts/violinPlot_shiny.R", local = T)
+  source("scripts/violinPlot_shiny.R", local = T)
   
   # Stop application (required for RInno)
   if(!interactive()){
