@@ -20,8 +20,8 @@ library(knitr)
 options(shiny.maxRequestSize = 500*1024^2)
 
 # File directory
-# dirLoc <- paste(getwd(), "/", sep = "")
-dirLoc <- "R:/KCA/Projects/ZEROApp/"
+dirLoc <- paste(getwd(), "/", sep = "")
+# dirLoc <- "R:/KCA/Projects/ZEROApp/"
 
 ##knit the instruction files
 knit("table_stats_help.Rmd", output = "table_stats_help.md")
@@ -115,13 +115,12 @@ ui <- fluidPage(
       # Select extra histology TPMs
       fluidRow(
         column(
-          12,
-          selectizeInput(
-            inputId = "histologySelect",
-            label = h4("Select histology groups to add TPM:"),
-            choices = NULL,
-            multiple = T
-          )
+          6,
+          uiOutput("categoryChoice")
+        ),
+        column(
+          6,
+          uiOutput("histologySelect")
         )
       ),
       # Select genes to view
@@ -445,16 +444,16 @@ server <- function(input, output, session) {
   source("scripts/tableView.R", local = T)
   
   # Import expression plot script
-  source("scripts/ExpressionPlot_shiny.R", local = T)
+  # source("scripts/ExpressionPlot_shiny.R", local = T)
   
   # Import tSNE plot script
-  source("scripts/tSNEPlot_shiny.R", local = T)
+  # source("scripts/tSNEPlot_shiny.R", local = T)
   
   # Import signautre script
-  source("scripts/SignaturePlot_shiny.R", local = T)
+  # source("scripts/SignaturePlot_shiny.R", local = T)
   
   # Import violin plot script
-  source("scripts/violinPlot_shiny.R", local = T)
+  # source("scripts/violinPlot_shiny.R", local = T)
   
   # Stop application (required for RInno)
   if(!interactive()){

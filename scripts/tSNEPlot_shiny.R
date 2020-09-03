@@ -108,16 +108,30 @@ observeEvent(
         expr = {
           # Create variable for tSNE patient metadata
           tSNEpatientMetadata <<- reactive({
-            check_tpm <- read.delim(paste(dirLoc, "GeneExpression_TPM_Counts.txt", sep = ""), sep = "\t", header = T, row.names = 1)
-            colnames(check_tpm) <- gsub(pattern="\\.",replacement="-",colnames(check_tpm))
-            metadata <- read.delim(paste(dirLoc, "Patients_Diagnosis.txt", sep = ""), header = T, stringsAsFactors = F)
-            metadata <- metadata[which(metadata[,1] %in% colnames(check_tpm)),]
-            return(metadata)
+            tryCatch(
+              expr = {
+                check_tpm <- read.delim(paste(dirLoc, "GeneExpression_TPM_Counts.txt", sep = ""), sep = "\t", header = T, row.names = 1)
+                colnames(check_tpm) <- gsub(pattern="\\.",replacement="-",colnames(check_tpm))
+                metadata <- read.delim(paste(dirLoc, "Patients_Diagnosis.txt", sep = ""), header = T, stringsAsFactors = F)
+                metadata <- metadata[which(metadata[,1] %in% colnames(check_tpm)),]
+                return(metadata)
+              },
+              error = function(e){
+                return(NULL)
+              }
+            )
           })
           # Create variable for tSNE patient tpm counts
           tSNETPM <<- reactive({
-            tpm <- read.delim(paste(dirLoc, "GeneExpression_TPM_Counts.txt", sep = ""), sep = "\t", header = T, row.names = 1)
-            return(tpm)
+            tryCatch(
+              expr = {
+                tpm <- read.delim(paste(dirLoc, "GeneExpression_TPM_Counts.txt", sep = ""), sep = "\t", header = T, row.names = 1)
+                return(tpm)
+              },
+              error = function(e){
+                return(NULL)
+              }
+            )
           })
         },
         error = function(e){
@@ -185,8 +199,8 @@ observeEvent(
 observeEvent(
   c(input$tSNEselectOffline, input$tSNETPMCounts2, input$tSNEPatientMetadata2),
   {
-    # tryCatch(
-    #   expr = {
+    tryCatch(
+      expr = {
         if(!is.null(tSNETPM()) & !is.null(tSNEpatientMetadata())){
           shinyjs::show("tSNEColourSelect")
           shinyjs::show("tSNEsampleSelect")
@@ -224,11 +238,11 @@ observeEvent(
             )
           })
         }
-    #   },
-    #   error = function(e){
-    #     return(NULL)
-    #   }
-    # )
+      },
+      error = function(e){
+        return(NULL)
+      }
+    )
   }
 )
 
