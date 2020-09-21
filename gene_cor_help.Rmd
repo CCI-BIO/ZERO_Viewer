@@ -1,0 +1,18 @@
+---
+title: "gene_cor_help"
+output: html_document
+---
+### PAIRWISE GENE CORRELATION
+
+```{r include = FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The pairwise gene correlation module requires only the input of the TPM file. 
+
+Two genes can be selected from the drop down lists (based on the first column of the TPM file). Additionally, different correlation methods (pearson, kendall and spearman) can be selected. 
+
+A plot with log converted TPM values between the two specified genes will be output. The plot will also contain a linear model fitted line. Above the plot will be the relevant correlation coefficient (r) and associated p-value (p). 
+
+Downloaded images will have the correlation coefficient and associated p-value printed in the top left of the plot. 
