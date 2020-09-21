@@ -21,7 +21,6 @@ options(shiny.maxRequestSize = 500*1024^2)
 
 # File directory
 dirLoc <- paste(getwd(), "/", sep = "")
-# dirLoc <- "R:/KCA/Projects/ZEROApp/"
 
 ##knit the instruction files
 knit("table_stats_help.Rmd", output = "table_stats_help.md")
@@ -427,6 +426,70 @@ ui <- fluidPage(
           downloadButton("VioPlotDownload", label = "Download as .png")
         )
       )
+    ),
+    ###############################
+    # Gene correlation -- Nisitha #
+    ###############################
+    tabPanel(
+      "Pairwise Gene Correlation Plot",
+      # Select mode for application
+      fluidRow(
+        column(
+          12,
+          radioButtons(
+            inputId = "GeneCorSelectOffline",
+            label = h4("Select mode:"),
+            choices = list("Online" = "online", "Offline" = "offline")
+          )
+        )
+      ),
+      # Select upload of TPM counts
+      fluidRow(
+        column(
+          4,
+          uiOutput("GeneCorTPMCounts")
+        )
+      ),
+      # Select genes for correlation 
+      fluidRow(
+        column(
+          4,
+          uiOutput("GeneCorFirstGene")
+        ),
+        column(
+          4,
+          uiOutput("GeneCorSecondGene")
+        ),
+        column(
+          4,
+          uiOutput("GeneCorSelectMethod")
+        )
+      ),
+      # Print correlation statistics
+      fluidRow(
+        column(
+          12,
+          tags$style(
+            "#GeneCorValues {font-size:30px;
+            font-weight:bold;}"
+          ),
+          textOutput("GeneCorValues")
+        )
+      ),
+      # Output signature plotly
+      fluidRow(
+        column(
+          12,
+          plotlyOutput("GeneCorPlot", height = "800px", width = "1200px")
+        )
+      ),
+      # Download signature plot button
+      fluidRow(
+        column(
+          12,
+          downloadButton("GeneCorPlotDownload", label = "Download as .png")
+        )
+      )
     )
   )
 )
@@ -454,6 +517,9 @@ server <- function(input, output, session) {
   
   # Import violin plot script
   source("scripts/violinPlot_shiny.R", local = T)
+  
+  # Import gene correlation script
+  source("scripts/geneCorrelation_shiny.R", local = T)
   
   # Stop application (required for RInno)
   if(!interactive()){
