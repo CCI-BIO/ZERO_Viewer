@@ -21,12 +21,15 @@ options(shiny.maxRequestSize = 500*1024^2)
 
 # File directory
 dirLoc <- paste(getwd(), "/", sep = "")
+# dirLoc <- "R:/KCA/Projects/ZEROApp/"
 
 ##knit the instruction files
 knit("table_stats_help.Rmd", output = "table_stats_help.md")
 knit("exp-plot-help.Rmd", output = "exp-plot-help.md")
 knit("sig_plot_help.Rmd", output = "sig_plot_help.md")
 knit("tsne_plot_help.Rmd", output = "tsne_plot_help.md")
+knit("vio_plot_help.Rmd", output = "vio_plot_help.md")
+knit("gene_cor_help.Rmd", output = "gene_cor_help.md")
 
 # Define UI for application
 ui <- fluidPage(
@@ -62,6 +65,14 @@ ui <- fluidPage(
         tabPanel(
           "Signature Plot",
           includeMarkdown("sig_plot_help.md")
+        ), 
+        tabPanel(
+          "Violin Plot",
+          includeMarkdown("vio_plot_help.md")
+        ),
+        tabPanel(
+          "Pairwise Gene Correlation",
+          includeMarkdown("gene_cor_help.md")
         )
       )
      ),

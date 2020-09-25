@@ -121,23 +121,32 @@ observeEvent(
           pval <- as.numeric(correlation$p.value)
           correlation_score <- as.numeric(correlation$estimate)
           
+          if(input$GeneCorSelectMethod2 == "pearson"){
+            corMethod <- "Pearson's"
+          } else if(input$GeneCorSelectMethod2 == "kendall"){
+            corMethod <- "Kendall's"
+          } else if(input$GeneCorSelectMethod2 == "spearman"){
+            corMethod <- "Spearman's"
+          }
+          
           output$GeneCorValues <- renderText({
-            paste("r = ", round(correlation_score, digits = 2), ", p = ", format(pval, digits = 3, scientific = T), sep = "")
+            paste(corMethod, " r = ", round(correlation_score, digits = 2), ", p = ", format(pval, digits = 3, scientific = T), sep = "")
           })
           
           df <- cbind(tpm1, tpm2)
           df <- as.data.frame(df)
+          df$Sample.ID <- colnames(modified_table)
           print(df)
-          p <- ggplot(data = df, mapping = aes(x = tpm1, y = tpm2)) +
+          p <- ggplot(data = df, mapping = aes(x = tpm1, y = tpm2, Sample.ID = Sample.ID)) +
             geom_point() +
-            geom_smooth(method = "lm") +
+            geom_smooth(inherit.aes = F, data = df, mapping = aes(x = tpm1, y = tpm2), method = "lm") +
             xlab(paste(input$GeneCorFirstGene2, " log(TPM)", sep = "")) +
             ylab(paste(input$GeneCorSecondGene2, " log(TPM)", sep = ""))
           
           # Create download handler
           output$GeneCorPlotDownload <- downloadHandler(
             filename = function(){paste(input$GeneCorFirstGene2, "_", input$GeneCorSecondGene2, "_correlation_plot.png", sep = "")},
-            content = function(file){ggsave(filename = file, plot = (p + geom_text(hjust = 0, size = 12, x = min(df$tpm1), y = max(df$tpm2), label = paste("r = ", round(correlation_score, digits = 2), ", p = ", format(pval, digits = 3, scientific = T), sep = ""))), device = "png", width = 20, height = 12, dpi = 150)}
+            content = function(file){ggsave(filename = file, plot = (p + ggtitle(paste(corMethod, " r = ", round(correlation_score, digits = 2), ", p = ", format(pval, digits = 3, scientific = T), sep = "")) + theme(plot.title = element_text(size = 17))), device = "png", width = 10, height = 6, dpi = 150)}
           )
           
           # Enable download button

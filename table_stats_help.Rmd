@@ -2,62 +2,55 @@
 title: "Table_stats_help"
 output: html_document
 ---
-## Table Statistics
 
-```{r include = F}
+```{r include = FALSE}
 library(knitr)
+knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Table statistics allows you to easily access the the statistical outputs such as Pvalues and Fold change values without having to open any spreadsheets. 
+### Table statistics
 
-Table statistics essentially requires you to upload 3 files.
+The table statistics module allows the user to view and manipulate a given input table. If provided with associated TPM (transcripts per million) counts and metadata files, the user will be able to generate some additional statistics for the table based on the specified groups. 
+
+The module requires the user to upload 3 files:
 
 ```{r out.width = "50%", echo=FALSE}
 
 include_graphics("Instruction_images/Upload_file_table_stats.png")
 ```
 
-**1. A tab deliminated text file which has the FC values.** 
+**1. A tab deliminated text file with any number of columns (first column must contain gene names).** 
 
-A table where in the first column has the gene ids and any N number of columns representing the different statistical scores such as Z score, FC value, Pvalue, etc. 
+A table where in the first column conatins gene names and any number of additional columns which may contain any types of information (eg. fold-change, p-values etc.).
 
 ```{r, echo=FALSE }
 example <- read.table("Example_files/example_FC.txt", header = T)
 example[1:5,]
 ```
 
+**2. Transcripts per million (TPM) counts file.**
 
-**2. Gene expression counts file.**
-
-Essentially a TPM counts file which has the TPM expression values for the different patient samples.
+A TPM counts file which contains the TPM values for all genes and samples present in the input tab-delimited file in the first step. The first column must contain gene names. A 'transcript_id(s)' column may be present (any column with this label will be automatically removed), however, any other columns will be regarded as samples.
 
 ```{r echo=FALSE }
 ex_TPM <- read.table("Example_files/Example_GeneExpression_TPM_Counts.txt", header = T, sep="\t")
 ex_TPM[1:4,1:7]
 ```
 
+**3. A sample metadata file.** 
 
-**3. A patient diagnosis file.** 
-
-The file should have the following columns : 
--*patient ID* - Patient ID should match the columns of the TPM expression file
--*Diagnosis*
--*final diagnosis*
--*category*. 
-
-
+The first column of this file should contain all the sample names as they appear in the TPM counts file. Any additional columns are treated as metadata for the samples in the first column. This file must contain column names (headers). 
 
 ```{r echo=FALSE }
 ex_patient_diagnosis <- read.delim("Example_files/example_diagnosis.txt", header = T, sep="\t")
 ex_patient_diagnosis
 ```
 
-
 **Various options provided:**
 
-* One of the features present in the table statistics is to receive specific histology group statistics based on the groups mentioned in the patient diagnosis file. 
+* One of the features of the table statistics module is to generate mean and median TPM statistics based on user specified groups from the sample metadata file. 
 
-The option "Select histology groups to add TPM" provides a drop down menu with all the histologies. Multiple selections are allowed. 
+First a metadata column must be selected from the 'Select groupings:' drop down list. Once this has been selected, specific group labels and be selected in the 'Select specific groupings:' box (multiple labels can be selected). This will add a mean and median TPM for each group selected across all genes to the end of the displayed table. 
 
 ```{r out.width = "50%", echo=FALSE}
 include_graphics("Instruction_images/Table_1.png")
@@ -65,23 +58,22 @@ include_graphics("Instruction_images/Table_1.png")
 
 * Selecting genes 
 
-Retrieval gene specific values can be retrieved using either of the three options : 
+Genes can be filtered down using the one of the folliwng options: 
 
-  *a. all genes - retrieves all the genes present in the file*
+  *1. all genes - displays all genes present in the file.*
 
-  *b. Specified genes - User can select genes from a down down menu.*
+  *2. Specified genes - the user can select specific genes from selection drop down menu.*
 
-  *c. Gene list - Takes in a text file which has the gene names mentioned.*
+  *3. Gene list - displays genes based on an input single column text file (no header) of gene names.*
 
 ```{r out.width = "50%", echo=FALSE}
 include_graphics("Instruction_images/select_genes.png")
 ```
 
-
-Additionally, there is a search option provided where in the user can perform a keyword search (see below image (2)) . 
+Additionally, there is a search option which can be used to perform a keyword search (see below image (2)) . 
 
 ```{r out.width = "50%", echo=FALSE}
 include_graphics("Instruction_images/table_gene.png")
 ```
 
-* Download - download the depicted table statistics locally.(refer to above image(3)) 
+* Download - download the depicted table statistics locally (refer to above image(3)) 

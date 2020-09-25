@@ -7,33 +7,50 @@ output: html_document
 library(knitr)
 knitr::opts_chunk$set(echo = TRUE)
 ```
-### TSNE PLOT
-In order to generate tSNE PLOT, 3 files are required: 
-1. Gene expression count table
-2. Patient diagnosis file
-3. Cancer type colors required for the tsne plot **OR** a custom group file based on sample ID and given groups (currently up to 9 groups). Check out the link to download examples of each of the files. 
 
-Colours can be assigned via two methods. 
+### tSNE plot
 
-**Method 1**
+The tSNE plot module allows the user to generate a tSNE plot for all samples and subsequently colour by specified groupings. Additional metadata information can also be viewed in the interactive plot. 
 
-The first method is by using a file containing colours assigned to the Diagnosis or Cancer Category based on the diagnosis file (cancer type colours example). Please note that the headers must be exactly as is shown in the example.
+The module requires the user to upload 3 files:
+
+* **1. TPM count table.**
+
+* **2. Sample metadata file.**
+
+* **3a. Group colours file containing groups as found in the sample metadata file and associated colours.**
+
+```{r, echo=FALSE }
+example <- read.table("Example_files/example_cancertype_colours.txt", header = T)
+```
+
+  **OR**
+
+* **3b. Custom group file containing sample ids and the associated groups.**
+
+```{r, echo=FALSE }
+example <- read.table("Example_files/example_custom_groups_file.txt", header = T)
+```
+
+
+**If using a group colours file (3a)**
+
+The first method of colouring the plot is by using a file containing colours assigned to the specific groups of interest based on the sample metadata file.
 
 ```{r echo=FALSE}
 example_cancer_colors <- read.delim("Example_files/example_cancertype_colours.txt", header=T, sep="\t")
 example_cancer_colors[1:5,]
 ```
 
-
-The 'Colour by specified categories' option under 'Select colour table input method' must be selected for this method to be used. A second option for selecting either the Diagnosis or Cancer Category (based on the columns in the cancer type colours input file) will appear under 'Select colouring category'.
+The 'Colour by specified categories' option under 'Select colour table input method' must be selected for this method to be used. A second option for selecting either specific grouping will appear under 'Select colouring category'.
 
 ```{r out.width = "50%", echo=FALSE}
 include_graphics("Instruction_images/tsne_1.png")
 ```
 
-**Method 2**
+**If using a custome group file (3b)**
 
-The second method is a custom user input with sample IDs and group names can be used (see custom group file example). Please note that the headers must be exactly as is shown in the example.
+The second method of colouring the plot is by using a custom user input with sample ids and groupings.
 
 ```{r, echo=FALSE}
 example_custom_colors <- read.delim("Example_files/example_custom_groups_file.txt", header=T, sep="\t")
@@ -50,17 +67,15 @@ Please be aware that the tSNE plots may take sometime to load. If it does not en
 
 Options: 
 
-The application allows the user to identify the cluster within which a patient fall into by selecting the interested patient using a drop down menu. 
-
-select a patient ID which is highlighted within the group as a star (see example image below).
+The application allows the user to identify the where a specific sample appears in the plot by selecting the sample ID in the '' drop down menu. The selected sample ID will be highlighted with a star (see example image below).
 
 ```{r out.width = "50%", echo=FALSE }
 include_graphics("Instruction_images/tsne_3.png")
 ```
 
-Additionally, user can hover over the graph to identify the patient ID, diagnosis and cancer category each of the dot falls into. 
+Additionally, the user can hover over the graph to identify the sample ID and other sample metadata for each data point. 
 
-There is also an option to change the perplexity of the tSNE in the case that there are too few samples for the default of 20 or if you wish to increase it beyond 20. 
+The user also has the option to adjust the perplexity of the tSNE in the case that there are too few samples for the default value of 20, or if you wish to increase it beyond 20. 
 
 The generated graph can be downloaded as a png file and saved locally using the download button. 
 

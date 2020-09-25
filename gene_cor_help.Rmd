@@ -2,12 +2,13 @@
 title: "gene_cor_help"
 output: html_document
 ---
-### PAIRWISE GENE CORRELATION
 
 ```{r include = FALSE}
 library(knitr)
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+### Pairwise gene correlation
 
 The pairwise gene correlation module requires only the input of the TPM file. 
 
