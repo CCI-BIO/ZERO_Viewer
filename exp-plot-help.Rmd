@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### Expression plot
 
-The expression plot modules allows the user to generate a TPM plot for all samples for a single gene. The user will additionally be able to highlight a specific sample within the plot as well as the associated samples within the same group. 
+The expression plot module allows the user to generate a TPM plot for all samples for a single gene. The user will additionally be able to highlight a specific sample within the plot as well as the associated samples within the same group. 
 
 The module requires the user to upload 2 files:
 

@@ -158,7 +158,7 @@ Expression_Dotplot <- function(id, geneList, tpm, cncInfo, cncInfo_1){
     name<-c(rep(gene,ncol(geneInfo)))
     grpdat<-data.frame(TPM=as.numeric(temp),name=name,groups=groups)
     grpdat <- cbind(grpdat, cncInfo_1)
-    maxVal<-max(geneInfo[1,])
+    maxVal<-max(geneInfo[1,])+1
     suppressWarnings({
       if(numCnc == 1){
         ##if a single sample is present within a  cancer type

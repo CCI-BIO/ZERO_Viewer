@@ -35,11 +35,11 @@ example <- read.table("Example_files/example_custom_groups_file.txt", header = T
 
 **If using a group colours file (3a)**
 
-The first method of colouring the plot is by using a file containing colours assigned to the specific groups of interest based on the sample metadata file.
+The first method of colouring the plot is by using a file containing colours assigned to the specific groups of interest based on the sample metadata file. The file may contain multiple different metadata categories but must contain all labels/groupings for the given metadata categories. 
 
 ```{r echo=FALSE}
 example_cancer_colors <- read.delim("Example_files/example_cancertype_colours.txt", header=T, sep="\t")
-example_cancer_colors[1:5,]
+example_cancer_colors
 ```
 
 The 'Colour by specified categories' option under 'Select colour table input method' must be selected for this method to be used. A second option for selecting either specific grouping will appear under 'Select colouring category'.
@@ -50,7 +50,7 @@ include_graphics("Instruction_images/tsne_1.png")
 
 **If using a custome group file (3b)**
 
-The second method of colouring the plot is by using a custom user input with sample ids and groupings.
+The second method of colouring the plot is by using a custom user input with sample ids and groupings. Colours will automatically be assigned in this method and any samples not provided in the file will be greyed out in the plot. 
 
 ```{r, echo=FALSE}
 example_custom_colors <- read.delim("Example_files/example_custom_groups_file.txt", header=T, sep="\t")
@@ -65,9 +65,9 @@ include_graphics("Instruction_images/tsne_2.png")
  
 Please be aware that the tSNE plots may take sometime to load. If it does not end up loading after few minutes, please try restarting the application. 
 
-Options: 
+**Options:** 
 
-The application allows the user to identify the where a specific sample appears in the plot by selecting the sample ID in the '' drop down menu. The selected sample ID will be highlighted with a star (see example image below).
+The application allows the user to identify the where a specific sample appears in the plot by selecting the sample ID in the 'Select sample ID to highlight:' drop down menu. The selected sample ID will be highlighted with a star (see example image below).
 
 ```{r out.width = "50%", echo=FALSE }
 include_graphics("Instruction_images/tsne_3.png")
