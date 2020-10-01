@@ -259,30 +259,6 @@ ui <- fluidPage(
           )
         )
       ),
-      fluidRow(
-        column(
-          6,
-          radioButtons(
-            inputId = "tSNEcolourSelect",
-            label = h4("Select colour table input method:"),
-            choices = list(
-              "Colour by specified categories" = "list",
-              "Custom user input" = "user"
-            )
-          )
-        ),
-        column(
-          6,
-          radioButtons(
-            inputId = "tSNEbroadCategories",
-            label = h4("Select colouring catergory:"),
-            choices = list(
-              "Colour by Diagnosis" = "specific",
-              "Colour by Cancer Category" = "broad"
-            )
-          )
-        )
-      ),
       # Select upload of TPM counts, Patient diagnosis files
       fluidRow(
         column(
@@ -298,6 +274,17 @@ ui <- fluidPage(
           uiOutput("tSNEColourTable")
         )
       ),
+      # Select colouring methods 
+      fluidRow(
+        column(
+          6,
+          uiOutput("tSNEColourSelect")
+        ),
+        column(
+          6,
+          uiOutput("tSNECategoryColourSelect")
+        )
+      ),
       # Select sample for plotting 
       fluidRow(
         column(
@@ -306,13 +293,7 @@ ui <- fluidPage(
         ),
         column(
           6,
-          numericInput(
-            inputId = "tSNEperplexitySelect", 
-            label = h4("Select perplexity for tSNE:"), 
-            value = 20, 
-            min = 1, 
-            step = 1
-          )
+          uiOutput("tSNEperplexitySelect")
         )
       ),
       # Output tSNE plotly
