@@ -44,7 +44,7 @@ observeEvent(
       output$VioPlotPatientMetadata <- renderUI({
         fileInput(
           inputId = "VioPlotPatientMetadata2",
-          label = h4("Upload patient diagnosis file:")
+          label = h4("Upload sample metadata file:")
         )
       })
       shinyjs::show("VioPlotTPMCounts")

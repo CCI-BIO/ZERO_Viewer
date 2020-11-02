@@ -79,4 +79,4 @@ The user also has the option to adjust the perplexity of the tSNE in the case th
 
 The generated graph can be downloaded as a png file and saved locally using the download button. 
 
-An error message will initially appear prior to loading the files. This message can be ignored (will be fixed in a future update). Any further error messages that appear will be directly related to an issue with the uploaded files or the specified perplexity of the tSNE.  
+Please note that an error message will initially appear prior to loading the files. This message can be ignored (will be fixed in a future update). Any further error messages that appear will be directly related to an issue with the uploaded files or the specified perplexity of the tSNE.  
