@@ -21,7 +21,6 @@ options(shiny.maxRequestSize = 500*1024^2)
 
 # File directory
 dirLoc <- paste(getwd(), "/", sep = "")
-# dirLoc <- "R:/KCA/Projects/ZEROApp/"
 
 ##knit the instruction files
 knit("table_stats_help.Rmd", output = "table_stats_help.md")
