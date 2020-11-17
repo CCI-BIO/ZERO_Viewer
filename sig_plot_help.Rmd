@@ -12,11 +12,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 The signature plot module allows the user to generate a gene signature TPM plot. This plot highlights a specific sample's TPM values for a given set of genes (signature) with comparisons against the full cohort (mean and median TPM).
 
-```{r out.width = "50%", fig.align='center', echo=FALSE}
-include_graphics("Instruction_images/sig_plot.png")
-```
-
 The module requires the user to upload 3 files:
+
+```{r out.width = "50%", fig.align='center', echo=FALSE}
+include_graphics("Instruction_images/sig_plot_1.png")
+```
 
 * **1. TPM count table.**
 
@@ -31,6 +31,6 @@ ex_gene_sig[1:5,]
 
 User defined signature files can be created similar to the one provided above. 
 
-The specified sample to show in the gene signature TPM plot can be selected using the 'Select sample ID:' drop down menu. 
+The specified sample to show in the gene signature TPM plot can be selected using the 'Select sample ID:' drop down list. 
 
-The resulting plot can be **downloaded** as a png file using the download button at the bottom left corner. 
+The final signature plot can be downloaded using the download button located at the bottom of the page. 

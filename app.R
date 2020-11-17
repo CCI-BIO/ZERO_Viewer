@@ -24,7 +24,7 @@ dirLoc <- paste(getwd(), "/", sep = "")
 
 ##knit the instruction files
 knit("table_stats_help.Rmd", output = "table_stats_help.md")
-knit("exp-plot-help.Rmd", output = "exp-plot-help.md")
+knit("exp_plot_help.Rmd", output = "exp_plot_help.md")
 knit("sig_plot_help.Rmd", output = "sig_plot_help.md")
 knit("tsne_plot_help.Rmd", output = "tsne_plot_help.md")
 knit("vio_plot_help.Rmd", output = "vio_plot_help.md")
@@ -41,7 +41,7 @@ ui <- fluidPage(
     id = "tabs", 
     title = "ZERO Viewer",
     ##############################
-    # Intruction Manual - Pooja  #
+    #     Intruction Manual      #
     ##############################
     tabPanel(
       "Help",
@@ -55,7 +55,7 @@ ui <- fluidPage(
         ),
         tabPanel(
           "Expression Plot",
-          includeMarkdown("exp-plot-help.md")
+          includeMarkdown("exp_plot_help.md")
         ),
         tabPanel(
           "tSNE Plot",
