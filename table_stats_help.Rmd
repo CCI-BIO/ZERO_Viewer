@@ -16,7 +16,7 @@ The module requires the user to upload 3 files:
 
 ```{r out.width = "50%", echo=FALSE}
 
-include_graphics("Instruction_images/Upload_file_table_stats.png")
+include_graphics("Instruction_images/table_stats_1.jpg")
 ```
 
 **1. A tab deliminated text file with any number of columns (first column must contain gene names).** 
@@ -52,10 +52,6 @@ ex_patient_diagnosis
 
 First a metadata column must be selected from the 'Select groupings:' drop down list. Once this has been selected, specific group labels and be selected in the 'Select specific groupings:' box (multiple labels can be selected). This will add a mean and median TPM for each group selected across all genes to the end of the displayed table. 
 
-```{r out.width = "50%", echo=FALSE}
-include_graphics("Instruction_images/Table_1.png")
-```
-
 * Selecting genes 
 
 Genes can be filtered down using the one of the folliwng options: 
@@ -67,13 +63,13 @@ Genes can be filtered down using the one of the folliwng options:
   *3. Gene list - displays genes based on an input single column text file (no header) of gene names.*
 
 ```{r out.width = "50%", echo=FALSE}
-include_graphics("Instruction_images/select_genes.png")
+include_graphics("Instruction_images/table_stats_2.jpg")
 ```
 
-Additionally, there is a search option which can be used to perform a keyword search (see below image (2)) . 
+Additionally, there is a search option which can be used to perform a keyword search. Final tables can be downloaded using the download button at the bottom of the page. 
 
 ```{r out.width = "50%", echo=FALSE}
-include_graphics("Instruction_images/table_gene.png")
+include_graphics("Instruction_images/table_stats_3.jpg")
 ```
 
-* Download - download the depicted table statistics locally (refer to above image(3)) 
+
