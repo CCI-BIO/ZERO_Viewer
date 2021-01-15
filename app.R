@@ -2,7 +2,7 @@
 ## 
 ## Created by the CCI Bioinformatics team (Nisitha Jayatilleke, Pooja Venkat and Chelsea Mayoh)
 ## Date: 15/07/2019
-## Last updated: 29/07/2020
+## Last updated: 15/01/2020
 
 # Import relevant libraries
 library(shiny)
