@@ -18,17 +18,17 @@ The module requires the user to upload 2 files:
 
 * **2. Sample metadata file.**
 
-```{r out.width = "50%", echo=FALSE}
+```{r out.width = "75%", fig.align='center', echo=FALSE}
 include_graphics("Instruction_images/exp_plot_1.jpg")
 ```
 
 The expression plot module allows the user to select the sample and gene of interest using the 'Select Sample ID:' and 'Select gene to plot:' drop down lists respectively (see above). 
 
-The selected patient is highlighted as a red triangle while the green dots highlight patients that are part of the same group.
+The selected sample is highlighted as a red triangle while the green dots highlight samples that are part of the same group.
 
 *The interactive plot has the addditional property of hovering over data points to display sample specific meta information.* 
 
-```{r out.width = "50%", echo=FALSE}
+```{r out.width = "75%", fig.align='center', echo=FALSE}
 include_graphics("Instruction_images/exp_plot_2.jpg")
 ```
 

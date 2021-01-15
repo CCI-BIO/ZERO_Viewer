@@ -14,7 +14,7 @@ The table statistics module allows the user to view and manipulate a given input
 
 The module requires the user to upload 3 files:
 
-```{r out.width = "50%", echo=FALSE}
+```{r out.width = "75%", fig.align='center', echo=FALSE}
 
 include_graphics("Instruction_images/table_stats_1.jpg")
 ```
@@ -23,7 +23,7 @@ include_graphics("Instruction_images/table_stats_1.jpg")
 
 A table where in the first column conatins gene names and any number of additional columns which may contain any types of information (eg. fold-change, p-values etc.).
 
-```{r, echo=FALSE }
+```{r, echo=FALSE, fig.align='center'}
 example <- read.table("Example_files/example_FC.txt", header = T)
 example[1:5,]
 ```
@@ -32,7 +32,7 @@ example[1:5,]
 
 A TPM counts file which contains the TPM values for all genes and samples present in the input tab-delimited file in the first step. The first column must contain gene names. A 'transcript_id(s)' column may be present (any column with this label will be automatically removed), however, any other columns will be regarded as samples.
 
-```{r echo=FALSE }
+```{r echo=FALSE, fig.align='center' }
 ex_TPM <- read.table("Example_files/Example_GeneExpression_TPM_Counts.txt", header = T, sep="\t")
 ex_TPM[1:4,1:7]
 ```
@@ -41,7 +41,7 @@ ex_TPM[1:4,1:7]
 
 The first column of this file should contain all the sample names as they appear in the TPM counts file. Any additional columns are treated as metadata for the samples in the first column. This file must contain column names (headers). 
 
-```{r echo=FALSE }
+```{r echo=FALSE, fig.align='center' }
 ex_patient_diagnosis <- read.delim("Example_files/example_diagnosis.txt", header = T, sep="\t")
 ex_patient_diagnosis
 ```
@@ -62,13 +62,13 @@ Genes can be filtered down using the one of the folliwng options:
 
   *3. Gene list - displays genes based on an input single column text file (no header) of gene names.*
 
-```{r out.width = "50%", echo=FALSE}
+```{r out.width = "75%", fig.align='center', echo=FALSE}
 include_graphics("Instruction_images/table_stats_2.jpg")
 ```
 
 Additionally, there is a search option which can be used to perform a keyword search. Final tables can be downloaded using the download button at the bottom of the page. 
 
-```{r out.width = "50%", echo=FALSE}
+```{r out.width = "75%", fig.align='center', echo=FALSE}
 include_graphics("Instruction_images/table_stats_3.jpg")
 ```
 

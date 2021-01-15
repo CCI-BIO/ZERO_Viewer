@@ -12,70 +12,56 @@ knitr::opts_chunk$set(echo = TRUE)
 
 The tSNE plot module allows the user to generate a tSNE plot for all samples and subsequently colour by specified groupings. Additional metadata information can also be viewed in the interactive plot. 
 
-The module requires the user to upload 3 files:
+The module requires the user to upload 2 files:
 
 * **1. TPM count table.**
 
 * **2. Sample metadata file.**
 
-* **3a. Group colours file containing groups as found in the sample metadata file and associated colours.**
+Additionally a third file can be uploaded:
 
-```{r, echo=FALSE }
-example <- read.table("Example_files/example_cancertype_colours.txt", header = T)
-```
+* **3. Custom group file containing sample ids and the associated groups.**
 
-  **OR**
-
-* **3b. Custom group file containing sample ids and the associated groups.**
-
-```{r, echo=FALSE }
+```{r fig.align='center', echo=FALSE }
 example <- read.table("Example_files/example_custom_groups_file.txt", header = T)
+example
 ```
 
+**If using the sample metadata for colouring (only TPM and sample metadata files)**
 
-**If using a group colours file (3a)**
+The first method of colouring the tSNE plot is to use the categories provided in your sample metadata file. Once the necessary files are uploaded (TPM and metadata), the option to colour by metadata category will be available in a drop down box. The plot will automatically select colours for the plot based on the number of groups in the selected category.
 
-The first method of colouring the plot is by using a file containing colours assigned to the specific groups of interest based on the sample metadata file. The file may contain multiple different metadata categories but must contain all labels/groupings for the given metadata categories. 
-
-```{r echo=FALSE}
-example_cancer_colors <- read.delim("Example_files/example_cancertype_colours.txt", header=T, sep="\t")
-example_cancer_colors
+```{r out.width = "75%", fig.align='center', echo=FALSE}
+include_graphics("Instruction_images/tsne_plot_1.jpg")
 ```
 
-The 'Colour by specified categories' option under 'Select colour table input method' must be selected for this method to be used. A second option for selecting either specific grouping will appear under 'Select colouring category'.
-
-```{r out.width = "50%", echo=FALSE}
-include_graphics("Instruction_images/tsne_1.png")
-```
-
-**If using a custome group file (3b)**
+**If using a custom group file (thrid file)**
 
 The second method of colouring the plot is by using a custom user input with sample ids and groupings. Colours will automatically be assigned in this method and any samples not provided in the file will be greyed out in the plot. 
 
-```{r, echo=FALSE}
-example_custom_colors <- read.delim("Example_files/example_custom_groups_file.txt", header=T, sep="\t")
-example_custom_colors
-```
-
 The 'Custom user input' option under 'Select colour table input method' must be selected for this method to be used. 
 
-```{r out.width = "50%", echo=FALSE}
-include_graphics("Instruction_images/tsne_2.png")
+```{r out.width = "75%", fig.align='center', echo=FALSE}
+include_graphics("Instruction_images/tsne_plot_2.jpg")
 ```
  
-Please be aware that the tSNE plots may take sometime to load. If it does not end up loading after few minutes, please try restarting the application. 
+Please be aware that the tSNE plots may take sometime to load. If it does not end up loading after few minutes, please try restarting the application. Additionally, you may need to adjust (lower) your perplexity value until the plot is generated (read below).
 
 **Options:** 
 
 The application allows the user to identify the where a specific sample appears in the plot by selecting the sample ID in the 'Select sample ID to highlight:' drop down menu. The selected sample ID will be highlighted with a star (see example image below).
 
-```{r out.width = "50%", echo=FALSE }
-include_graphics("Instruction_images/tsne_3.png")
+```{r out.width = "75%", fig.align='center', echo=FALSE }
+include_graphics("Instruction_images/tsne_plot_3.jpg")
 ```
 
 Additionally, the user can hover over the graph to identify the sample ID and other sample metadata for each data point. 
 
 The user also has the option to adjust the perplexity of the tSNE in the case that there are too few samples for the default value of 20, or if you wish to increase it beyond 20. 
+
+```{r out.width = "75%", fig.align='center', echo=FALSE }
+include_graphics("Instruction_images/tsne_plot_4.jpg")
+```
 
 The generated graph can be downloaded as a png file and saved locally using the download button. 
 
