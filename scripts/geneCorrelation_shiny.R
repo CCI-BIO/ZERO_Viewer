@@ -68,22 +68,18 @@ observeEvent(
       }
     }
     if(!is.null(geneList)){
-      output$GeneCorFirstGene <- renderUI({
-        selectInput(
-          inputId = "GeneCorFirstGene2", 
-          label = h4("Select first gene:"), 
-          choices = geneList, 
-          multiple = F
-        )
-      })
-      output$GeneCorSecondGene <- renderUI({
-        selectInput(
-          inputId = "GeneCorSecondGene2", 
-          label = h4("Select second gene:"), 
-          choices = geneList, 
-          multiple = F
-        )
-      })
+      updateSelectizeInput(
+        session = session, 
+        inputId = "GeneCorFirstGene", 
+        choices = geneList, 
+        server = T
+      )
+      updateSelectizeInput(
+        session = session, 
+        inputId = "GeneCorSecondGene", 
+        choices = geneList, 
+        server = T
+      )
       output$GeneCorSelectMethod <- renderUI({
         selectInput(
           inputId = "GeneCorSelectMethod2",
@@ -101,14 +97,14 @@ observeEvent(
 )
 
 observeEvent(
-  c(input$GeneCorFirstGene2, input$GeneCorSecondGene2, input$GeneCorSelectMethod2),
+  c(input$GeneCorFirstGene, input$GeneCorSecondGene, input$GeneCorSelectMethod2),
   {
     tryCatch(
       expr = {
-        if(!is.null(input$GeneCorFirstGene2) & !is.null(input$GeneCorSecondGene2)){
+        if(!is.null(input$GeneCorFirstGene) & !is.null(input$GeneCorSecondGene)){
           modified_table <- tpm_table[,-which(colnames(tpm_table) %in% "transcript_id.s.")]
-          tpm1 <- modified_table[which(rownames(modified_table) == input$GeneCorFirstGene2),]
-          tpm2 <- modified_table[which(rownames(modified_table) == input$GeneCorSecondGene2),]
+          tpm1 <- modified_table[which(rownames(modified_table) == input$GeneCorFirstGene),]
+          tpm2 <- modified_table[which(rownames(modified_table) == input$GeneCorSecondGene),]
           tpm1[tpm1 == 0] <- 0.0001
           tpm2[tpm2 == 0] <- 0.0001
           tpm1 <- log(tpm1)
@@ -140,12 +136,12 @@ observeEvent(
           p <- ggplot(data = df, mapping = aes(x = tpm1, y = tpm2, Sample.ID = Sample.ID)) +
             geom_point() +
             geom_smooth(inherit.aes = F, data = df, mapping = aes(x = tpm1, y = tpm2), method = "lm") +
-            xlab(paste(input$GeneCorFirstGene2, " log(TPM)", sep = "")) +
-            ylab(paste(input$GeneCorSecondGene2, " log(TPM)", sep = ""))
+            xlab(paste(input$GeneCorFirstGene, " log(TPM)", sep = "")) +
+            ylab(paste(input$GeneCorSecondGene, " log(TPM)", sep = ""))
           
           # Create download handler
           output$GeneCorPlotDownload <- downloadHandler(
-            filename = function(){paste(input$GeneCorFirstGene2, "_", input$GeneCorSecondGene2, "_correlation_plot.png", sep = "")},
+            filename = function(){paste(input$GeneCorFirstGene, "_", input$GeneCorSecondGene, "_correlation_plot.png", sep = "")},
             content = function(file){ggsave(filename = file, plot = (p + ggtitle(paste(corMethod, " r = ", round(correlation_score, digits = 2), ", p = ", format(pval, digits = 3, scientific = T), sep = "")) + theme(plot.title = element_text(size = 17))), device = "png", width = 10, height = 6, dpi = 150)}
           )
           

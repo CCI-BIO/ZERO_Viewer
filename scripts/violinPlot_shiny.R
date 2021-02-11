@@ -152,15 +152,12 @@ observeEvent(
       expr = {
         if(!is.null(VioPlotTPM()) & !is.null(VioPlotPatientMetadata())){
           tpm <- VioPlotTPM()
-          output$VioPlotGeneSelect <- renderUI({
-            selectizeInput(
-              inputId = "VioPlotGeneSelect2",
-              label = h4("Select gene to plot:"),
-              choices = rownames(tpm),
-              multiple = F 
-              # options = list(maxOptions = 30000)
-            )
-          })
+          updateSelectizeInput(
+            session = session,
+            inputId = "VioPlotGeneSelect",
+            choices = rownames(tpm),
+            server = T
+          )
           metadata <- VioPlotPatientMetadata()
           output$VioPlotCategorySelect <- renderUI({
             selectizeInput(
@@ -222,7 +219,7 @@ observeEvent(
 
 # Plot trigger
 observeEvent(
-  c(input$VioPlotSelectOffline, input$VioPlotTPMCounts2, input$VioPlotPatientMetadata2, input$VioPlotGeneSelect2, input$VioPlotCategorySelect2, input$VioPlotSelectTPMScale2, input$VioPlotSpecificCategorySelect2),
+  c(input$VioPlotSelectOffline, input$VioPlotTPMCounts2, input$VioPlotPatientMetadata2, input$VioPlotGeneSelect, input$VioPlotCategorySelect2, input$VioPlotSelectTPMScale2, input$VioPlotSpecificCategorySelect2),
   {
     if(input$VioPlotSelectOffline == "offline" | input$VioPlotSelectOffline == "online"){
       # Construct violin plot with plotly
@@ -231,7 +228,7 @@ observeEvent(
         expr = {
             if(!is.null(VioPlotTPM())){
               tpm <- VioPlotTPM()
-              geneToTest <- input$VioPlotGeneSelect2
+              geneToTest <- input$VioPlotGeneSelect
               tpmSubset <- tpm[which(rownames(tpm) %in% geneToTest),,drop=F]
               tpmSubset <- tpmSubset[,-which(colnames(tpmSubset) %in% "transcript_id.s."),drop=F]
               metadata <- VioPlotPatientMetadata()

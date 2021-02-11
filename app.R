@@ -411,7 +411,12 @@ ui <- fluidPage(
       fluidRow(
         column(
           4,
-          uiOutput("VioPlotGeneSelect")
+          selectizeInput(
+            inputId = "VioPlotGeneSelect", 
+            label = h4("Select gene to plot:"), 
+            choices = NULL, 
+            multiple = F
+          )
         ),
         column(
           4,
@@ -464,11 +469,21 @@ ui <- fluidPage(
       fluidRow(
         column(
           4,
-          uiOutput("GeneCorFirstGene")
+          selectizeInput(
+            inputId = "GeneCorFirstGene", 
+            label = h4("Select first gene:"), 
+            choices = NULL, 
+            multiple = F
+          )
         ),
         column(
           4,
-          uiOutput("GeneCorSecondGene")
+          selectizeInput(
+            inputId = "GeneCorSecondGene", 
+            label = h4("Select second gene:"), 
+            choices = NULL, 
+            multiple = F
+          )
         ),
         column(
           4,
