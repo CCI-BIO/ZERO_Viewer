@@ -449,12 +449,10 @@ observeEvent(
               logTable <- tSNETpmObject()
               
               tsne_points <<- cbind(tsne_points, SampleID = rownames(logTable))
-              m <- match(sampleMetadata[,1], tsne_points$SampleID)
-              tsne_points <<- cbind(tsne_points, sampleMetadata[m,-1])
+              tsne_points <<- merge(x = tsne_points, y = sampleMetadata, by.x = "SampleID", by.y = c(1))
               
-              tsne_points$Groupings <<- c(rep("Other", nrow(tsne_points))) 
-              m1 <- match(colourTable[,1], tsne_points$SampleID)
-              tsne_points$Groupings[m1] <<- colourTable[,2]
+              tsne_points <<- cbind(tsne_points, SampleID = rownames(logTable))
+              tsne_points <<- merge(x = tsne_points, y = sampleMetadata, by.x = "SampleID", by.y = c(1))
               
               # Create ggplot string
               stringToParse <- "ggplot(tsne_points, aes(x = V1, y = V2, SampleID = SampleID"

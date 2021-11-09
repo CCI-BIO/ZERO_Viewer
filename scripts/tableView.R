@@ -280,6 +280,7 @@ output$tablePreview <- renderDT(
           } else if(input$selectOffline == "online"){
             patientMetadata <- read.delim(paste(dirLoc, "/Patients_Diagnosis.txt", sep = ""), header = T, stringsAsFactors = F)
             TPMcounts <- read.delim(paste(dirLoc, "/GeneExpression_TPM_Counts.txt", sep = ""), header = T, stringsAsFactors = F)
+            colnames(TPMcounts) <- gsub(pattern="\\.",replacement="-",colnames(TPMcounts))
             TPMcounts <- TPMcounts[which(TPMcounts$gene_id %in% tableToView$gene_id),]
             rownames(TPMcounts) <- TPMcounts$gene_id
             TPMcounts <- TPMcounts[,-c(1:2)]
