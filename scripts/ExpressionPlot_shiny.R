@@ -29,7 +29,7 @@ observeEvent(c(input$Select_plotfile_dot),{
         cncInfo_online<<-read.delim(paste(dirLoc,"Patients_Diagnosis.txt",sep=""),sep="\t",header=F,row.names=1)
         cncInfo_online<<-cncInfo_online[c(1,which(rownames(cncInfo_online) %in% colnames(tpm_online))),]
         cncInfo_1_online<<-read.delim(paste(dirLoc,"Patients_Diagnosis.txt",sep=""),sep="\t",header=T)
-        cncInfo_1_online<<-cncInfo_1_online[which(cncInfo_1_online$Patient.ID %in% colnames(tpm_online)),]
+        cncInfo_1_online<<-cncInfo_1_online[which(cncInfo_1_online[,1] %in% colnames(tpm_online)),]
         
         # Check if file exists
         if(is.null(tpm_online) & is.null(cncInfo_1_online)){
@@ -39,7 +39,7 @@ observeEvent(c(input$Select_plotfile_dot),{
           ##Tried decreasing the number of list here for it to load faster
           genes_list <- tpm_online$gene_id
           updateSelectizeInput(session = session, inputId = "selectgenes2_dot", choices = genes_list, server = T)
-          patient_id <- cncInfo_1_online$Patient.ID
+          patient_id <- cncInfo_1_online[,1]
           updateSelectizeInput(session = session, inputId = "selectPatient_dot", choices = patient_id, server = T )
         }
       } else if (input$Select_plotfile_dot == "offline_plot"){
@@ -56,7 +56,7 @@ observeEvent(c(input$Select_plotfile_dot),{
         #check<<-0
         #UI for file inputs
         output$dotTPM_file <- renderUI({fileInput(inputId = "dotTPMCounts", label = h4("Upload TPM counts file:"))})
-        output$dotPatient_file <- renderUI({fileInput(inputId = "dotPatientmetadata", label = h4("Upload patient diagnosis file:"))})
+        output$dotPatient_file <- renderUI({fileInput(inputId = "dotPatientmetadata", label = h4("Upload sample metadata file:"))})
       }
     },
     error = function(e){
@@ -104,7 +104,7 @@ observeEvent(c(input$Select_plotfile_dot, input$dotTPMCounts, input$dotPatientme
         
         #extract Patient ids
         cncInfo_1_offline<<-read.delim(inFile_dot1$datapath,sep="\t",header=T)
-        patient_id_offline <- cncInfo_1_offline$Patient.ID
+        patient_id_offline <- cncInfo_1_offline[,1]
         
         updateSelectizeInput(session = session,inputId = "selectPatient_dot_offline", choices = patient_id_offline,server=T )
         
@@ -117,8 +117,8 @@ observeEvent(c(input$Select_plotfile_dot, input$dotTPMCounts, input$dotPatientme
     ##Check if patients IDs correlate in both tpm and patient diagnosis file
     if(!is.null(tpm_offline) & !is.null(cncInfo_offline) & !is.null(cncInfo_1_offline) ){
       cncInfo_offline<<-cncInfo_offline[c(1,which(rownames(cncInfo_offline) %in% colnames(tpm_offline))),]
-      cncInfo_1_offline<<-cncInfo_1_offline[which(cncInfo_1_offline$Patient.ID %in% colnames(tpm_offline)),]
-      patient_id_offline <- cncInfo_1_offline$Patient.ID
+      cncInfo_1_offline<<-cncInfo_1_offline[which(cncInfo_1_offline[,1] %in% colnames(tpm_offline)),]
+      patient_id_offline <- cncInfo_1_offline[,1]
       
       updateSelectizeInput(session = session,inputId = "selectPatient_dot_offline", choices = patient_id_offline,server=T )
       
@@ -218,7 +218,7 @@ Expression_Dotplot <- function(id, geneList, tpm, cncInfo, cncInfo_1){
     gr$colour[gr$groups=="all"] <- "black"
     gr$colour[grep("^z", gr$groups)] <- "red"
     gr$colour[gr$groups!="all" & !(grepl("^z", gr$groups))] <- "green"
-    gr$groups[grep("^z", gr$groups)] <- as.character(gr$Patient.ID[grep("^z", gr$groups)])
+    gr$groups[grep("^z", gr$groups)] <- as.character(gr[grep("^z", gr$groups),1])
     gr$groups[gr$groups=="all"] <- "Cohort"
     colourGroup <- gr$colour
     names(colourGroup) <- gr$groups

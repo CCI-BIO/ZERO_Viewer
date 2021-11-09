@@ -20,21 +20,23 @@ library(knitr)
 options(shiny.maxRequestSize = 500*1024^2)
 
 # File directory
-dirLoc <- getwd()
+dirLoc <- paste(getwd(), "/", sep = "")
+# dirLoc <- "R:/KCA/Projects/ZEROApp/"
 
 ##knit the instruction files
 knit("table_stats_help.Rmd", output = "table_stats_help.md")
 knit("exp-plot-help.Rmd", output = "exp-plot-help.md")
 knit("sig_plot_help.Rmd", output = "sig_plot_help.md")
 knit("tsne_plot_help.Rmd", output = "tsne_plot_help.md")
-
+knit("vio_plot_help.Rmd", output = "vio_plot_help.md")
+knit("gene_cor_help.Rmd", output = "gene_cor_help.md")
 
 # Define UI for application
 ui <- fluidPage(
   # Set shiny theme
   theme = shinytheme("flatly"),
   # Initialise ShinyJS
-  useShinyjs(),
+  shinyjs::useShinyjs(),
   # Navbar initialisation
   navbarPage(
     id = "tabs", 
@@ -63,11 +65,19 @@ ui <- fluidPage(
         tabPanel(
           "Signature Plot",
           includeMarkdown("sig_plot_help.md")
+        ), 
+        tabPanel(
+          "Violin Plot",
+          includeMarkdown("vio_plot_help.md")
+        ),
+        tabPanel(
+          "Pairwise Gene Correlation",
+          includeMarkdown("gene_cor_help.md")
         )
       )
      ),
     ################################
-    # DE and table view -- Nisitha #
+    # Table viewer -- Nisitha #
     ################################
     tabPanel(
       "Table Statistics",
@@ -115,13 +125,12 @@ ui <- fluidPage(
       # Select extra histology TPMs
       fluidRow(
         column(
-          12,
-          selectizeInput(
-            inputId = "histologySelect",
-            label = h4("Select histology groups to add TPM:"),
-            choices = NULL,
-            multiple = T
-          )
+          6,
+          uiOutput("categoryChoice")
+        ),
+        column(
+          6,
+          uiOutput("histologySelect")
         )
       ),
       # Select genes to view
@@ -194,7 +203,7 @@ ui <- fluidPage(
           6,
           selectizeInput(
             inputId = "selectPatient_dot", 
-            label = h4("Select Patient ID:"), 
+            label = h4("Select Sample ID:"), 
             choices = NULL, 
             multiple = F
           )
@@ -214,7 +223,7 @@ ui <- fluidPage(
           6,
           selectizeInput(
             inputId = "selectPatient_dot_offline", 
-            label = h4("Select Patient ID:"), 
+            label = h4("Select Sample ID:"), 
             choices = NULL, 
             multiple = F
           )
@@ -367,6 +376,131 @@ ui <- fluidPage(
           downloadButton("SigPlotDownload", label = "Download as .png")
         )
       )
+    ),
+    #############################
+    # Violin plot -- Nisitha    #
+    #############################
+    tabPanel(
+      "Violin Plot",
+      # Select mode for application
+      fluidRow(
+        column(
+          12,
+          radioButtons(
+            inputId = "VioPlotSelectOffline",
+            label = h4("Select mode:"),
+            choices = list("Online" = "online", "Offline" = "offline")
+          )
+        )
+      ),
+      # Select upload of TPM counts and Patient diagnosis files
+      fluidRow(
+        column(
+          4,
+          uiOutput("VioPlotTPMCounts")
+        ),
+        column(
+          4,
+          uiOutput("VioPlotPatientMetadata")
+        ),
+        column(
+          4,
+          uiOutput("VioPlotSelectTPMScale")
+        )
+      ),
+      # Select gene for plotting
+      fluidRow(
+        column(
+          4,
+          uiOutput("VioPlotGeneSelect")
+        ),
+        column(
+          4,
+          uiOutput("VioPlotCategorySelect")
+        ),
+        column(
+          4,
+          uiOutput("VioPlotSpecificCategorySelect")
+        )
+      ),
+      # Output signature plotly
+      fluidRow(
+        column(
+           12,
+          plotlyOutput("VioPlot", height = "800px", width = "1200px")
+        )
+      ),
+      # Download signature plot button
+      fluidRow(
+        column(
+          12,
+          downloadButton("VioPlotDownload", label = "Download as .png")
+        )
+      )
+    ),
+    ###############################
+    # Gene correlation -- Nisitha #
+    ###############################
+    tabPanel(
+      "Pairwise Gene Correlation Plot",
+      # Select mode for application
+      fluidRow(
+        column(
+          12,
+          radioButtons(
+            inputId = "GeneCorSelectOffline",
+            label = h4("Select mode:"),
+            choices = list("Online" = "online", "Offline" = "offline")
+          )
+        )
+      ),
+      # Select upload of TPM counts
+      fluidRow(
+        column(
+          4,
+          uiOutput("GeneCorTPMCounts")
+        )
+      ),
+      # Select genes for correlation 
+      fluidRow(
+        column(
+          4,
+          uiOutput("GeneCorFirstGene")
+        ),
+        column(
+          4,
+          uiOutput("GeneCorSecondGene")
+        ),
+        column(
+          4,
+          uiOutput("GeneCorSelectMethod")
+        )
+      ),
+      # Print correlation statistics
+      fluidRow(
+        column(
+          12,
+          tags$style(
+            "#GeneCorValues {font-size:30px;
+            font-weight:bold;}"
+          ),
+          textOutput("GeneCorValues")
+        )
+      ),
+      # Output signature plotly
+      fluidRow(
+        column(
+          12,
+          plotlyOutput("GeneCorPlot", height = "800px", width = "1200px")
+        )
+      ),
+      # Download signature plot button
+      fluidRow(
+        column(
+          12,
+          downloadButton("GeneCorPlotDownload", label = "Download as .png")
+        )
+      )
     )
   )
 )
@@ -374,7 +508,11 @@ ui <- fluidPage(
 # Define server logic
 server <- function(input, output, session) {
   # Use shinyjs
-  useShinyjs()
+  shinyjs::useShinyjs()
+  
+  # Disable buttons at start
+  shinyjs::disable("SigPlotSelectOffline")
+  shinyjs::disable("VioPlotSelectOffline")
   
   # Import table view script
   source("scripts/tableView.R", local = T)
@@ -387,6 +525,12 @@ server <- function(input, output, session) {
   
   # Import signautre script
   source("scripts/SignaturePlot_shiny.R", local = T)
+  
+  # Import violin plot script
+  source("scripts/violinPlot_shiny.R", local = T)
+  
+  # Import gene correlation script
+  source("scripts/geneCorrelation_shiny.R", local = T)
   
   # Stop application (required for RInno)
   if(!interactive()){

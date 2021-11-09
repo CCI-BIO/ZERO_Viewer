@@ -14,11 +14,12 @@ observe({
       tryCatch(
         expr = {
           patientMetadata <- read.delim(paste(dirLoc, "Patients_Diagnosis.txt", sep = ""), header = T, stringsAsFactors = F)
-          sampleSelectList <- patientMetadata$Patient.ID
+          print(patientMetadata)
+          sampleSelectList <- patientMetadata[,1]
           names(sampleSelectList) <- sampleSelectList
           selectizeInput(
             inputId = "sampleSelect2",
-            label = h4("Select patient ID:"),
+            label = h4("Select sample ID:"),
             choices = sampleSelectList,
             multiple = F,
             selected = NULL
@@ -73,7 +74,7 @@ observe({
     output$patientMetadata <- renderUI({
       fileInput(
         inputId = "patientMetadata2",
-        label = h4("Upload patient diagnosis file:")
+        label = h4("Upload sample metadata file:")
       )
     })
     # Select TPM data table
@@ -107,6 +108,72 @@ output$selectGenes <- renderUI({
   }
 })
 
+# Select groupings 
+observeEvent(
+  c(input$selectOffline, input$sampleSelect2, input$tableSelect2, input$selectGeneInput, input$patientMetadata2, input$TPMcounts2),
+  {
+    tryCatch(
+      expr = {
+        if(input$selectOffline == "offline"){
+          inFile2 <- input[["patientMetadata2"]]
+          if(is.null(inFile2)){
+            return(NULL)
+          } else {
+            patientMetadata <- read.delim(inFile2$datapath, header = T, stringsAsFactors = F)
+          }
+        } else if(input$selectOffline == "online"){
+          patientMetadata <- read.delim(paste(dirLoc, "/Patients_Diagnosis.txt", sep = ""), header = T, stringsAsFactors = F)
+        }
+        output$categoryChoice <- renderUI({
+          selectInput(
+            inputId = "categoryChoice2",
+            label = h4("Select groupings:"), 
+            choices = colnames(patientMetadata)[-1], 
+            multiple = F
+          )
+        })
+      },
+      error = function(e){
+        return(NULL)
+      }
+    )
+  }
+)
+
+# Select specific groups to summarise
+observeEvent(
+  c(input$categoryChoice2),
+  {
+    tryCatch(
+      expr = {
+        if(!is.null(input$categoryChoice2)){
+          if(input$selectOffline == "offline"){
+            inFile2 <- input[["patientMetadata2"]]
+            if(is.null(inFile2)){
+              return(NULL)
+            } else {
+              patientMetadata <- read.delim(inFile2$datapath, header = T, stringsAsFactors = F)
+            }
+          } else if(input$selectOffline == "online"){
+            patientMetadata <- read.delim(paste(dirLoc, "/Patients_Diagnosis.txt", sep = ""), header = T, stringsAsFactors = F)
+          }
+          output$histologySelect <- renderUI({
+            selectInput(
+              inputId = "histologySelect2",
+              label = h4("Select specific groupings:"), 
+              choices = unique(patientMetadata[,input$categoryChoice2]), 
+              multiple = T
+            )
+          })
+        }
+      },
+      error = function(e){
+        return(NULL)
+      }
+    )
+  }
+)
+
 # Server side selectize input for genes
 observeEvent(
   c(input$selectOffline, input$sampleSelect2, input$tableSelect2, input$selectGeneInput, input$patientMetadata2, input$TPMcounts2),
@@ -128,22 +195,6 @@ observeEvent(
               server = T
             )
           }
-          inFile2 <- input[["patientMetadata2"]]
-          if(is.null(inFile2)){
-            return(NULL)
-          } else {
-            patientMetadata <- read.delim(inFile2$datapath, header = T, stringsAsFactors = F)
-            histologyList <- patientMetadata[,c("Diagnosis", "FinalDiagnosis")]
-            histologyListChoices <- histologyList$Diagnosis
-            names(histologyListChoices) <- histologyList$FinalDiagnosis
-            updateSelectizeInput(
-              session = session,
-              inputId = "histologySelect",
-              choices = histologyListChoices,
-              selected = NULL,
-              server = T
-            )
-          }
         } else if(input$selectOffline == "online"){
           sampleToView <- input$sampleSelect2
           if(length(grep(pattern = "P00", x = sampleToView)) > 0){
@@ -157,17 +208,6 @@ observeEvent(
             session = session,
             inputId = "geneSelectSpecifc",
             choices = geneList,
-            selected = NULL,
-            server = T
-          )
-          patientMetadata <- read.delim(paste(dirLoc, "/Patients_Diagnosis.txt", sep = ""), header = T, stringsAsFactors = F)
-          histologyList <- patientMetadata[,c("Diagnosis", "FinalDiagnosis")]
-          histologyListChoices <- histologyList$Diagnosis
-          names(histologyListChoices) <- histologyList$FinalDiagnosis
-          updateSelectizeInput(
-            session = session,
-            inputId = "histologySelect",
-            choices = histologyListChoices,
             selected = NULL,
             server = T
           )
@@ -220,7 +260,7 @@ output$tablePreview <- renderDT(
           }
           tableToView <- tableToView[which(tableToView$gene_id %in% geneList),]
         }
-        if(!is.null(input$histologySelect)){
+        if(!is.null(input$histologySelect2)){
           if(input$selectOffline == "offline"){
             inFile2 <- input[["patientMetadata2"]]
             if(is.null(inFile2)){
@@ -244,10 +284,10 @@ output$tablePreview <- renderDT(
             rownames(TPMcounts) <- TPMcounts$gene_id
             TPMcounts <- TPMcounts[,-c(1:2)]
           }
-          selectHist <- input$histologySelect
+          selectHist <- input$histologySelect2
           for(i in 1:length(selectHist)){
             histToCalc <- selectHist[i]
-            patientMetadataSubset <- patientMetadata$Patient.ID[which(patientMetadata$Diagnosis %in% histToCalc)]
+            patientMetadataSubset <- patientMetadata[which(patientMetadata[,input$categoryChoice2] %in% histToCalc),1]
             TPMcountssubset <- TPMcounts[, which(colnames(TPMcounts) %in% patientMetadataSubset),drop=F]
             TPMmean <- rowMeans(TPMcountssubset)
             TPMmedian <- apply(TPMcountssubset, 1, function(x) median(x))

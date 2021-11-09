@@ -2,13 +2,13 @@
 title: "signature_plot_help"
 output: html_document
 ---
-### SIGNATURE PLOT
 
 ```{r include = FALSE}
 library(knitr)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+### Signature plot
 
 ```{r out.width = "50%", fig.align='center', echo=FALSE}
 include_graphics("Instruction_images/sig_plot.png")
